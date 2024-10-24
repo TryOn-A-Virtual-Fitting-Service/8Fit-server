@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgresdb:
+    build:
+      context: ./postgresDB
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - 8Fit-network
+
+  web-application-server:
+    build:
+      context: ./web-application-server
+      dockerfile: Dockerfile
+    environment:
+        - DB_USERNAME=${DB_USERNAME}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_URL=jdbc:postgresql://postgresdb:5432/${DB_NAME}
+    depends_on:
+      - postgresdb
+    ports:
+        - "8080:8080"
+    networks:
+        - 8Fit-network
+
+volumes:
+  postgres_data:
+
+networks:
+  8Fit-network:
+    driver: bridge
