@@ -34,13 +34,19 @@ public class Fitting extends BaseEntity {
         this.imageUrl = imageUrl;
         this.llmAdvice = llmAdvice;
         this.cloth = cloth;
-        this.user = user;
+        setUser(user);
     }
 
-    @Builder(builderMethodName = "createFittingWithoutAdviceForTest")
-    public Fitting(String imageUrl, Cloth cloth, User user) {
-        this.imageUrl = imageUrl;
-        this.cloth = cloth;
+    public void setUser(User user) {
+        // remove existing relation
+        if (this.user != null) {
+            this.user.getFittings().remove(this);
+        }
+
+        // set new relation
         this.user = user;
+        if (user != null && !user.getFittings().contains(this)) {
+            user.getFittings().add(this);
+        }
     }
 }

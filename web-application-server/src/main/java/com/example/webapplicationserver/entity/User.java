@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -21,15 +23,35 @@ public class User extends BaseEntity {
     private String deviceId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<FittingModel> fittingModels = new ArrayList<>();
+    private final Set<FittingModel> fittingModels = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Fitting> fittings = new ArrayList<>();
+    private final Set<Fitting> fittings = new HashSet<>();
 
     @Builder(builderMethodName = "createUser")
     public User(String deviceId) {
         this.deviceId = deviceId;
 
+    }
+
+    public void addFittingModel(FittingModel fittingModel) {
+        fittingModels.add(fittingModel);
+        fittingModel.setUser(this);
+    }
+
+    public void removeFittingModel(FittingModel fittingModel) {
+        fittingModels.remove(fittingModel);
+        fittingModel.setUser(null);
+    }
+
+    public void addFitting(Fitting fitting) {
+        fittings.add(fitting);
+        fitting.setUser(this);
+    }
+
+    public void removeFitting(Fitting fitting) {
+        fittings.remove(fitting);
+        fitting.setUser(null);
     }
 }
 

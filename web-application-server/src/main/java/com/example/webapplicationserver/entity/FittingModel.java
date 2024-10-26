@@ -28,4 +28,17 @@ public class FittingModel extends BaseEntity {
         this.imageUrl = imageUrl;
         this.user = user;
     }
+
+    public void setUser(User user) {
+        // remove existing relation
+        if (this.user != null) {
+            this.user.getFittingModels().remove(this);
+        }
+
+        // set new relation
+        this.user = user;
+        if (user != null && !user.getFittingModels().contains(this)) {
+            user.getFittingModels().add(this);
+        }
+    }
 }
