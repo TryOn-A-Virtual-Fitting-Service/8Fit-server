@@ -2,8 +2,13 @@ package com.example.webapplicationserver.entity;
 
 import com.example.webapplicationserver.entity.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
+@Getter
 @Table(name = "fitting_models")
 public class FittingModel extends BaseEntity {
     @Id
@@ -17,4 +22,10 @@ public class FittingModel extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Builder(builderMethodName = "createFittingModel")
+    public FittingModel(String imageUrl, User user) {
+        this.imageUrl = imageUrl;
+        this.user = user;
+    }
 }
