@@ -9,9 +9,9 @@ public enum Site {
     ZIGZAG("FEMALE"), // 지그재그
     ETC("MALE"); // 기타 쇼핑몰
 
-    private final String defaultModel;
+    private final String defaultFittingModel;
 
-    Site(String defaultModel) {
-        this.defaultModel = defaultModel;
+    Site(String defaultFittingModel) {
+        this.defaultFittingModel = defaultFittingModel;
     }
 }
