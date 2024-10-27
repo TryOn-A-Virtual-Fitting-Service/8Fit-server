@@ -10,9 +10,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
+@JsonPropertyOrder({"success", "code", "message", "result"})
 public class ApiResponse<T> {
-    @JsonProperty("isSuccess")
+    @JsonProperty("success")
     private final boolean isSuccess;
     private final String code;
     private final String message;
