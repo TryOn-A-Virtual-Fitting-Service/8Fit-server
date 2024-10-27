@@ -22,7 +22,7 @@ public class TestController {
             @RequestBody RequestTestDto requestTestDto
     ) {
         ResponseTestDto responseTestDto = testService.saveTest(requestTestDto);
-        return ApiResponse.onSuccess(SuccessStatus._OK, responseTestDto);
+        return ApiResponse.onSuccess(SuccessStatus.OK, responseTestDto);
     }
 
 }

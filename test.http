@@ -1,0 +1,15 @@
+### Test checkDeviceId Endpoint with valid deviceId
+POST http://localhost:8080/test
+Content-Type: application/json
+
+{
+  "deviceId": "validDeviceId123"
+}
+
+### Test checkDeviceId Endpoint with blank deviceId
+POST http://localhost:8080/test
+Content-Type: application/json
+
+{
+  "deviceId": ""
+}

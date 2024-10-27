@@ -4,6 +4,7 @@ import com.example.webapplicationserver.apiPayload.ApiResponse;
 import com.example.webapplicationserver.apiPayload.code.ErrorReasonDto;
 import com.example.webapplicationserver.apiPayload.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +30,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             ConstraintViolationException e,
             WebRequest request) {
         String errorMessage = e.getConstraintViolations().stream()
-                .map(constraintViolation -> constraintViolation.getMessage())
+                .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("ConstraintViolationException 추출 도중 에러 발생"));
 
@@ -39,8 +40,6 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     public ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException e,
-            HttpHeaders headers,
-            HttpStatus status,
             WebRequest request) {
 
         Map<String, String> errors = new LinkedHashMap<>();
@@ -65,12 +64,12 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             WebRequest request) {
         e.printStackTrace();
 
-        return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY,
-                ErrorStatus._INTERNAL_SERVER_ERROR.getErrorReasonDto().httpStatus(), request, e.getMessage());
+        return handleExceptionInternalFalse(e, ErrorStatus.INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY,
+                ErrorStatus.INTERNAL_SERVER_ERROR.getErrorReasonDto().httpStatus(), request, e.getMessage());
     }
 
     @ExceptionHandler(value = GeneralException.class)
-    public ResponseEntity onThrowException(
+    public ResponseEntity<Object> onThrowException(
             GeneralException generalException,
             HttpServletRequest request) {
         ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonDto();

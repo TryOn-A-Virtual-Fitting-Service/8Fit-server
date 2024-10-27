@@ -5,9 +5,10 @@ import com.example.webapplicationserver.apiPayload.code.ErrorReasonDto;
 import lombok.Getter;
 
 
+
 @Getter
 public class GeneralException extends RuntimeException {
-    public BaseErrorCode baseErrorCode;
+    private final BaseErrorCode baseErrorCode;
 
     public GeneralException(BaseErrorCode baseErrorCode) {
         this.baseErrorCode = baseErrorCode;
