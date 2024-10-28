@@ -12,6 +12,9 @@ public enum SuccessStatus implements BaseCode {
     CREATED(HttpStatus.CREATED, "COMMON201", "성공적으로 생성되었습니다."),
     ACCEPTED(HttpStatus.ACCEPTED, "COMMON202", "요청이 수락되었습니다."),
     NO_CONTENT(HttpStatus.NO_CONTENT, "COMMON204", "성공적으로 처리되었습니다."),
+
+    // On Widget
+    WIDGET_INFO_OK(HttpStatus.OK, "WIDGET200", "위젯 정보를 성공적으로 불러왔습니다."),
     ;
 
 
