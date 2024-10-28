@@ -13,3 +13,6 @@ Content-Type: application/json
 {
   "deviceId": ""
 }
+
+### Health Check
+GET http://localhost:8080/test
