@@ -1,5 +1,5 @@
 ### Test checkDeviceId Endpoint with valid deviceId
-POST http://localhost:8080/test
+POST http://localhost:8080/api/v1/test
 Content-Type: application/json
 
 {
@@ -7,9 +7,18 @@ Content-Type: application/json
 }
 
 ### Test checkDeviceId Endpoint with blank deviceId
-POST http://localhost:8080/test
+POST http://localhost:8080/api/v1/test
 Content-Type: application/json
 
 {
   "deviceId": ""
 }
+
+### Health Check
+GET http://localhost:8080/api/v1/test
+
+
+### GET Widget Info
+GET http://localhost:8080/api/v1/{{deviceId}}
+Content-Type: application/json
+# run with enviroment(dev)

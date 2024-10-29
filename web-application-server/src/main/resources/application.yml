@@ -1,3 +1,8 @@
+server:
+  servlet:
+    # context path
+    context-path: /api/v1
+
 spring:
   application:
     name: web-application-server
@@ -5,7 +10,13 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
-  # Database configuration
+  servlet:
+    # file upload
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # Database
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${DB_URL}
@@ -18,7 +29,31 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        show_sql: true
+        show_sql: false
         format_sql: true
         use_sql_comments: true
+
+  # aws
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      region:
+        static: ${AWS_REGION}
+      s3:
+        bucket: ${AWS_S3_BUCKET_NAME}
+
+# logging
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        orm.jdbc.bind: TRACE
+
+
+
+
+
 
