@@ -19,6 +19,11 @@ public class ApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final T result;
 
+    public static ApiResponse<?> onSuccess(BaseCode baseCode) {
+        ReasonDto reasonDto = baseCode.getReasonDto();
+        return new ApiResponse<>(true, reasonDto.code(), reasonDto.message(), null);
+    }
+
     public static <T> ApiResponse<T> onSuccess(BaseCode baseCode, T result) {
         ReasonDto reasonDto = baseCode.getReasonDto();
         return new ApiResponse<>(true, reasonDto.code(), reasonDto.message(), result);
