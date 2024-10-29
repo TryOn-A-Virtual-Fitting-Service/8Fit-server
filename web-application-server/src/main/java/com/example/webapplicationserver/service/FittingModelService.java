@@ -12,6 +12,7 @@ import com.example.webapplicationserver.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -23,6 +24,7 @@ public class FittingModelService {
 
     private final S3Utils s3Utils;
 
+    @Transactional
     public ResponseFittingModelDto uploadFittingModel(String deviceId, MultipartFile image) {
         if (image.isEmpty()) {
             throw new S3ExceptionHandler(ErrorStatus.FILE_EMPTY);
