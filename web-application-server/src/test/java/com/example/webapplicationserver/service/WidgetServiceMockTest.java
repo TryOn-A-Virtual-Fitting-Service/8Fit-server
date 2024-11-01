@@ -20,7 +20,7 @@ public class WidgetServiceMockTest {
     @BeforeEach
     public void setUp() {
         // repository initialization
-        userRepository = Mockito.mock(UserRepository.class);
+        userRepository = mock(UserRepository.class);
 
         // service initialization
         widgetService = new WidgetService(
