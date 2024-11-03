@@ -1,14 +1,35 @@
-version: '3.8'
+version: '3'
 
 services:
+  nginx:
+    container_name: 8fit-proxy
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: 8fit-proxy:1.0.0-compose
+    ports:
+      - "80:80"
+    networks:
+      - 8Fit-network
+    depends_on:
+      web-application-server:
+        condition: service_healthy
+
   postgresdb:
+    container_name: 8fit-db
     build:
       context: ./postgresDB
       dockerfile: Dockerfile
+    image: 8fit-db:1.0.0-compose
     environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+        POSTGRES_USER: ${DB_USERNAME}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -U ${DB_USERNAME} -d ${DB_NAME} -c 'SELECT 1;' || exit 1" ]
+      interval: 5s
+      retries: 5
+      timeout: 10s
     ports:
       - "5432:5432"
     volumes:
@@ -16,20 +37,25 @@ services:
     networks:
       - 8Fit-network
 
+
   web-application-server:
+    container_name: 8fit-was
     build:
       context: ./web-application-server
       dockerfile: Dockerfile
-    environment:
-        - DB_USERNAME=${DB_USERNAME}
-        - DB_PASSWORD=${DB_PASSWORD}
-        - DB_URL=jdbc:postgresql://postgresdb:5432/${DB_NAME}
+    image: 8fit-was:1.0.0-compose
+    env_file:
+      - .env
     depends_on:
-      - postgresdb
-    ports:
-        - "8080:8080"
+      postgresdb:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/api/v1/health || exit 1" ]
+      interval: 10s
+      retries: 5
+      timeout: 5s
     networks:
-        - 8Fit-network
+      - 8Fit-network
 
 volumes:
   postgres_data:
