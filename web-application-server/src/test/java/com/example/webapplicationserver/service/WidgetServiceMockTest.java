@@ -5,30 +5,29 @@ import com.example.webapplicationserver.entity.User;
 import com.example.webapplicationserver.model.UserFixture;
 import com.example.webapplicationserver.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class WidgetServiceMockTest {
-    private WidgetService widgetService;
+    @Mock
     private UserRepository userRepository;
-
-    @BeforeEach
-    public void setUp() {
-        // repository initialization
-        userRepository = mock(UserRepository.class);
-
-        // service initialization
-        widgetService = new WidgetService(
-                userRepository
-        );
-    }
+    @InjectMocks
+    private WidgetService widgetService;
 
     @Test
+    @DisplayName("기기가 존재할 때 기기 정보를 저장하지 않고 위젯 정보를 가져온다.")
     void getWidgetInfoTest_UserExists() {
         // Arrange
         String deviceId = "existing-device-id";
@@ -48,6 +47,7 @@ public class WidgetServiceMockTest {
 
 
     @Test
+    @DisplayName("기기가 존재하지 않을 때 DB에 기기 정보를 저장하고 위젯 정보를 가져온다.")
     void getWidgetInfoTest_UserDoesNotExist() {
         // Arrange
         String deviceId = "non-existing-device-id";
