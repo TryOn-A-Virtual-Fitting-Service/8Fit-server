@@ -25,12 +25,12 @@ jobs:
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
 
       - name: Copy .env file to EC2
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ".env"  
+          source: "./.env"
           target: "/app/.env" 
 
       - name: Deploy on EC2 with Docker Compose
@@ -41,8 +41,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /app || exit 1
-            git checkout main
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
             docker-compose down 
             docker-compose build 
             docker-compose up -d
