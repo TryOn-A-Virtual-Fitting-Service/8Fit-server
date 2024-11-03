@@ -1,0 +1,18 @@
+spring:
+  # aws
+  cloud:
+    aws:
+      credentials:
+        access-key: test-access-key
+        secret-key: test-secret-key
+      region:
+        static: test-region
+      s3:
+        bucket: test-bucket
+
+
+
+
+
+
+

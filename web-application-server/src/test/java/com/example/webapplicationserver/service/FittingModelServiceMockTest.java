@@ -11,8 +11,14 @@ import com.example.webapplicationserver.repository.FittingModelRepository;
 import com.example.webapplicationserver.repository.UserRepository;
 import com.example.webapplicationserver.utils.S3Utils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -21,28 +27,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class FittingModelServiceMockTest {
+    @Mock
     private FittingModelRepository fittingModelRepository;
+    @Mock
     private UserRepository userRepository;
+    @Mock
     private S3Utils s3Utils;
+    @InjectMocks
     private FittingModelService fittingModelService;
 
-    @BeforeEach
-    public void setUp() {
-        // repository initialization
-        fittingModelRepository = mock(FittingModelRepository.class);
-        userRepository = mock(UserRepository.class);
-        s3Utils = mock(S3Utils.class);
-
-        // service initialization
-        fittingModelService = new FittingModelService(
-                fittingModelRepository,
-                userRepository,
-                s3Utils
-        );
-    }
-
     @Test
+    @DisplayName("Fitting Model 업로드 성공")
     void uploadFittingModel_Success() {
         // Arrange
         String deviceId = "test-device-id";
@@ -65,6 +62,7 @@ public class FittingModelServiceMockTest {
     }
 
     @Test
+    @DisplayName("Fitting Model 업로드 실패: 파일이 비어있을 때")
     void uploadFittingModel_FileEmpty() {
         // Arrange
         String deviceId = "test-device-id";
@@ -83,6 +81,7 @@ public class FittingModelServiceMockTest {
     }
 
     @Test
+    @DisplayName("Fitting Model 업로드 실패: 사용자를 찾을 수 없을 때")
     void uploadFittingModel_UserNotFound() {
         // Arrange
         String deviceId = "non-existent-device-id";
