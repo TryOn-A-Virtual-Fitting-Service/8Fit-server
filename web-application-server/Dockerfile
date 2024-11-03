@@ -7,6 +7,8 @@ WORKDIR /app
 # 호스트 머신의 소스코드를 작업 디렉토리로 복사
 COPY . /app
 
+RUN chmod +x ./gradlew
+
 # Gradle 빌드를 실행하여 JAR 파일 생성
 RUN ./gradlew clean build --no-daemon
 
