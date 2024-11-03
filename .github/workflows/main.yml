@@ -40,7 +40,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /app
-            git pull
+            git checkout main
+            git pull origin main  
             docker-compose down 
             docker-compose build 
             docker-compose up -d 
