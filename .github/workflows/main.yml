@@ -46,3 +46,14 @@ jobs:
             docker-compose down 
             docker-compose build 
             docker-compose up -d
+            
+      - name: Send success message to Discord
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" -X POST -d '{"content": "🚀 배포가 **성공**했습니다! 🎉 프론트엔드는 아직인가요?????????????? 😤 (임건 일해라)}' ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Send failure message to Discord
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" -X POST -d '{"content": "배포에 실패했습니다. 로그를 확인해주세요."}' ${{ secrets.DISCORD_WEBHOOK_URL }}
+
