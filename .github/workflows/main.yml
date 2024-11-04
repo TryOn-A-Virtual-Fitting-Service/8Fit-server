@@ -51,7 +51,7 @@ jobs:
         if: success()
         uses: Ilshidur/action-discord@0.3.2
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USERNAME: WAPP_BOT
           DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
           DISCORD_EMBEDS: |
@@ -67,7 +67,7 @@ jobs:
         if: failure()
         uses: Ilshidur/action-discord@0.3.2
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USERNAME: WAPP_BOT
           DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
           DISCORD_EMBEDS: |
