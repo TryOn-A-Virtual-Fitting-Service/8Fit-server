@@ -16,7 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@RestController("/widget")
+@RestController
+@RequestMapping("/widget")
 @RequiredArgsConstructor
 @Tag(name = "Widget API", description = "set of widget endpoints")
 public class WidgetController {
