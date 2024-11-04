@@ -15,7 +15,7 @@ public enum SuccessStatus implements BaseCode {
 
     // On Widget
     WIDGET_INFO_OK(HttpStatus.OK, "WIDGET200", "위젯 정보를 성공적으로 불러왔습니다."),
-    FILE_UPLOAD_OK(HttpStatus.OK, "FILE200", "파일 업로드가 성공적으로 완료되었습니다."),
+    FILE_UPLOAD_OK(HttpStatus.OK, "FILE201", "파일 업로드가 성공적으로 완료되었습니다."),
     ;
 
 
