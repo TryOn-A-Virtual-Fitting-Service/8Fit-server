@@ -1,6 +1,6 @@
 package com.example.webapplicationserver.apiPayload.exception;
 
-import com.example.webapplicationserver.apiPayload.ApiResponse;
+import com.example.webapplicationserver.apiPayload.ApiResponseWrapper;
 import com.example.webapplicationserver.apiPayload.code.ErrorReasonDto;
 import com.example.webapplicationserver.apiPayload.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
@@ -82,7 +82,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpServletRequest request) {
 
-        ApiResponse<Object> body = ApiResponse.onFailure(errorReasonDto.code(), errorReasonDto.message(), null);
+        ApiResponseWrapper<Object> body = ApiResponseWrapper.onFailure(errorReasonDto.code(), errorReasonDto.message(), null);
         WebRequest webRequest = new ServletWebRequest(request);
         return super.handleExceptionInternal(
                 e,
@@ -99,7 +99,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             HttpStatus status,
             WebRequest request,
             String errorPoint) {
-        ApiResponse<Object> body = ApiResponse.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().message(), errorPoint);
+        ApiResponseWrapper<Object> body = ApiResponseWrapper.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().message(), errorPoint);
         return super.handleExceptionInternal(
                 e,
                 body,
@@ -114,7 +114,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             ErrorStatus errorStatus,
             WebRequest request,
             Map<String, String> errorArgs) {
-        ApiResponse<Object> body = ApiResponse.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().code(), errorArgs);
+        ApiResponseWrapper<Object> body = ApiResponseWrapper.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().code(), errorArgs);
         return super.handleExceptionInternal(
                 e,
                 body,
@@ -128,7 +128,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             ErrorStatus errorStatus,
             HttpHeaders headers,
             WebRequest request) {
-        ApiResponse<Object> body = ApiResponse.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().message(), null);
+        ApiResponseWrapper<Object> body = ApiResponseWrapper.onFailure(errorStatus.getErrorReasonDto().code(), errorStatus.getErrorReasonDto().message(), null);
         return super.handleExceptionInternal(
                 e,
                 body,
