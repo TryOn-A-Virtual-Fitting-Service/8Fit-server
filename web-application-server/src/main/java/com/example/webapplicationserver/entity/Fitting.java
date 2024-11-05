@@ -21,7 +21,7 @@ public class Fitting extends BaseEntity {
     @Column(nullable = true, columnDefinition = "TEXT", name = "llm_advice")
     private String llmAdvice;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cloth_id", nullable = false)
     private Cloth cloth;
 

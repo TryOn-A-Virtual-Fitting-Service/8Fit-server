@@ -4,10 +4,7 @@ import com.example.webapplicationserver.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor
@@ -26,7 +23,7 @@ public class User extends BaseEntity {
     private final Set<FittingModel> fittingModels = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final Set<Fitting> fittings = new HashSet<>();
+    private final Set<Fitting> fittings = new TreeSet<>(Comparator.comparing(Fitting::getCreatedAt).reversed());
 
     @Builder(builderMethodName = "createUser")
     public User(String deviceId) {
