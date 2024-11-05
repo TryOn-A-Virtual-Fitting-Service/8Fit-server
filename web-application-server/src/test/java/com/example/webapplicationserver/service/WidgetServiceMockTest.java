@@ -49,6 +49,7 @@ public class WidgetServiceMockTest {
             Fitting fitting = existingUser.getFittings().stream().toList().get(i);
             ResponseWidgetDto.Model model = response.models().get(i);
             assertEquals(fitting.getCloth().getImageUrl(), model.itemImageUrl());
+            assertEquals(fitting.getCloth().getImageUrl(), model.itemImageUrl());
             assertEquals(fitting.getImageUrl(), model.modelImageUrl());
         }
     }

@@ -22,6 +22,7 @@ public class UserConverter {
     private static List<ResponseWidgetDto.Model> createModels(User user) {
         return user.getFittings().stream()
                 .map(fitting -> new ResponseWidgetDto.Model(
+                        fitting.getId(),
                         fitting.getCloth().getImageUrl(),
                         fitting.getImageUrl()
                 ))

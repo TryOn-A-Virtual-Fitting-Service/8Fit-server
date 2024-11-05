@@ -10,6 +10,8 @@ public record ResponseWidgetDto(
         List<Model> models
 ) {
     public record Model(
+            @Schema(description = "Model ID.")
+            Long modelId,
             @Schema(description = "URL for the item image.")
             String itemImageUrl,
             @Schema(description = "URL for the model image.")
