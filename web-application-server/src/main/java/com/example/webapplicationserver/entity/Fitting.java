@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -29,11 +32,14 @@ public class Fitting extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    private LocalDateTime createdAt;
+
     @Builder(builderMethodName = "createFitting")
     public Fitting(String imageUrl, String llmAdvice, Cloth cloth, User user) {
         this.imageUrl = imageUrl;
         this.llmAdvice = llmAdvice;
         this.cloth = cloth;
+        this.createdAt = LocalDateTime.now();
         setUser(user);
     }
 
@@ -45,7 +51,7 @@ public class Fitting extends BaseEntity {
 
         // set new relation
         this.user = user;
-        if (user != null && !user.getFittings().contains(this)) {
+        if (user != null) {
             user.getFittings().add(this);
         }
     }
