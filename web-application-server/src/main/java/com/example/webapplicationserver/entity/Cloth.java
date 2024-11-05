@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
 @NoArgsConstructor
@@ -19,9 +20,11 @@ public class Cloth extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true, name = "category")
     private Category category;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true, name = "site")
     private Site site;
 
     @Column(nullable = true, length = 255, name = "cloth_image_url")
