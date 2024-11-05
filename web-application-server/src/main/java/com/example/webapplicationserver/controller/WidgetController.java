@@ -5,6 +5,7 @@ import com.example.webapplicationserver.apiPayload.code.status.SuccessStatus;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
 import com.example.webapplicationserver.service.FittingModelService;
+import com.example.webapplicationserver.service.FittingService;
 import com.example.webapplicationserver.service.WidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class WidgetController {
     private final WidgetService widgetService;
     private final FittingModelService fittingModelService;
+    private final FittingService fittingService;
 
     @Operation(summary = "Get widget information for specific device", description = "Get widget information by device id")
     @ApiResponses(value = {
@@ -45,7 +47,7 @@ public class WidgetController {
             @ApiResponse(responseCode = "500", description = "File upload error(FILE500)"),
     })
     @PostMapping({"{deviceId}/model"})
-    public ApiResponseWrapper<ResponseFittingModelDto> getWidgetModel(
+    public ApiResponseWrapper<ResponseFittingModelDto> uploadFittingModel(
             @Parameter(description = "Device ID", required = true)
             @PathVariable("deviceId") @NotEmpty String deviceId,
 
@@ -53,6 +55,15 @@ public class WidgetController {
     ) {
         ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadFittingModel(deviceId, image);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
+    }
+
+    @PostMapping("{deviceId}/cloth")
+    public ApiResponseWrapper<?> getFittingResult(
+            @PathVariable("deviceId") String deviceId,
+            @RequestParam("image") MultipartFile image
+    ) {
+        fittingService.tryOnCloth(deviceId, image);
+        return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK);
     }
 
 

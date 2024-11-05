@@ -19,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 public class FittingModelService {
+    // repository layer
     private final FittingModelRepository fittingModelRepository;
     private final UserRepository userRepository;
 
+    // utilize S3
     private final S3Utils s3Utils;
 
     @Transactional
@@ -34,7 +36,7 @@ public class FittingModelService {
         User user = userRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
 
-        // save fitting model
+        // upload fitting model image
         String modelUrl = s3Utils.uploadImage(image);
 
         // save fitting model
