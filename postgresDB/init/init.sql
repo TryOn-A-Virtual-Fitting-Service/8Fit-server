@@ -58,7 +58,7 @@ insert into clothes (created_at, updated_at, category, cloth_image_url, product_
 (current_timestamp, current_timestamp, 'SHORT_SLEEVE', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/eac0b77f-b096-402f-9ed3-74db14d2545d_mockCloth.jpg', null, 'MUSINSA'),
 (current_timestamp, current_timestamp, 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/dfc301ed-10ad-4e48-bc11-e1d4c2ac7566_mockCloth2.jpg', null, 'ZIGZAG'),
 (current_timestamp, current_timestamp, 'SHORT_SLEEVE', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/eac0b77f-b096-402f-9ed3-74db14d2545d_mockCloth.jpg', null, 'MUSINSA'),
-(current_timestamp, current_timestamp, 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/dfc301ed-10ad-4e48-bc11-e1d4c2ac7566_mockCloth2.jpg', null, 'ZIGZAG'),
+(current_timestamp, current_timestamp, 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/dfc301ed-10ad-4e48-bc11-e1d4c2ac7566_mockCloth2.jpg', null, 'ZIGZAG')
 ;
 
 
@@ -66,10 +66,10 @@ insert into clothes (created_at, updated_at, category, cloth_image_url, product_
 insert into fittings (created_at, updated_at, user_id, cloth_id, result_image_url) values
 (current_timestamp, current_timestamp, 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
 (current_timestamp, current_timestamp, 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
-(current_timestamp, current_timestamp, 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
-(current_timestamp, current_timestamp, 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
-(current_timestamp, current_timestamp, 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
-(current_timestamp, current_timestamp, 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
-(current_timestamp, current_timestamp, 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
-(current_timestamp, current_timestamp, 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
+(current_timestamp, current_timestamp, 1, 3, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+(current_timestamp, current_timestamp, 1, 4, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
+(current_timestamp, current_timestamp, 1, 5, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+(current_timestamp, current_timestamp, 1, 6, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
+(current_timestamp, current_timestamp, 1, 7, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+(current_timestamp, current_timestamp, 1, 8, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png')
 ;
