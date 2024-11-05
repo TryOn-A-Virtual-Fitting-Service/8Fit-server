@@ -1,11 +1,8 @@
 package com.example.webapplicationserver.converter;
 
-import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
-import com.example.webapplicationserver.entity.Fitting;
 import com.example.webapplicationserver.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserConverter {

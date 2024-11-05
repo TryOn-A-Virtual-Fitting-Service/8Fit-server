@@ -23,7 +23,8 @@ public class User extends BaseEntity {
     private final Set<FittingModel> fittingModels = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final Set<Fitting> fittings = new TreeSet<>(Comparator.comparing(Fitting::getCreatedAt).reversed());
+    @OrderBy("createdAt DESC")
+    private final Set<Fitting> fittings = new LinkedHashSet<>();
 
     @Builder(builderMethodName = "createUser")
     public User(String deviceId) {
