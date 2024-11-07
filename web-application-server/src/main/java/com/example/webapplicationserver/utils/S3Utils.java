@@ -34,7 +34,7 @@ public class S3Utils {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(imageName)
-                .contentType(image.getContentType())
+                .contentType("image/png")
                 .build();
 
         // upload
@@ -46,5 +46,26 @@ public class S3Utils {
         log.info("File uploaded to S3: {}", imageName);
 
         return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + imageName;
+    }
+
+    public String uploadImage(byte[] image) {
+        // object to upload to S3
+        String fileName = UUID.randomUUID() + ".png";
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .contentType("image/png")
+                .build();
+
+        // upload
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(image));
+        } catch (Exception e) {
+            throw new S3ExceptionHandler(ErrorStatus.FILE_UPLOAD_ERROR);
+        }
+        log.info("File uploaded to S3: {}", fileName);
+
+        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
     }
 }
