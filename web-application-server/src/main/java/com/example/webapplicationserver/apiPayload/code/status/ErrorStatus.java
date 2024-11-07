@@ -18,7 +18,14 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // S3
     FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FILE500", "파일 업로드 중 에러가 발생했습니다."),
-    FILE_EMPTY(HttpStatus.BAD_REQUEST, "FILE400", "파일이 비어있습니다.")
+    FILE_EMPTY(HttpStatus.BAD_REQUEST, "FILE400", "파일이 비어있습니다."),
+
+    // Fitting
+    FITTING_POST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 POST 응답에서 에러가 발생했습니다."),
+    FITTING_GET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 GET 응답에서 에러가 발생했습니다."),
+    FITTING_WEBCLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 서버 통신 과정에서 에러가 발생했습니다."),
+
+    CLASSIFICATION_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "이미지 분류 서버 통신 과정에서 에러가 발생했습니다."),
     ;
 
     private final HttpStatus httpStatus;
