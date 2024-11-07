@@ -62,5 +62,5 @@ springdoc:
     path: /swagger-ui.html
 
 
-fitting:
-  server-uri: ${FITTING_SERVER_URI}
+server-uri:
+  fitting: ${FITTING_SERVER_URI}
