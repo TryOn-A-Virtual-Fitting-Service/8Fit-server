@@ -16,6 +16,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+      enabled: true
 
   # Database
   datasource:
@@ -61,5 +62,5 @@ springdoc:
     path: /swagger-ui.html
 
 
-
-
+fitting:
+  server-uri: ${FITTING_SERVER_URI}

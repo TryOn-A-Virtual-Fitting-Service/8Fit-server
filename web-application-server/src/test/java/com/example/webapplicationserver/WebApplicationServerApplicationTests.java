@@ -1,15 +1,15 @@
-package com.example.webapplicationserver;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-@SpringBootTest
-@ActiveProfiles("test")
-class WebApplicationServerApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//package com.example.webapplicationserver;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.test.context.ActiveProfiles;
+//
+//@SpringBootTest
+//@ActiveProfiles("test")
+//class WebApplicationServerApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}

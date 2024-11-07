@@ -3,6 +3,7 @@ package com.example.webapplicationserver.controller;
 import com.example.webapplicationserver.apiPayload.ApiResponseWrapper;
 import com.example.webapplicationserver.apiPayload.code.status.SuccessStatus;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
+import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
 import com.example.webapplicationserver.service.FittingModelService;
 import com.example.webapplicationserver.service.FittingService;
@@ -51,19 +52,20 @@ public class WidgetController {
             @Parameter(description = "Device ID", required = true)
             @PathVariable("deviceId") @NotEmpty String deviceId,
 
-            @RequestParam("image") MultipartFile image
+            @RequestPart("image") MultipartFile image
     ) {
         ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadFittingModel(deviceId, image);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
     }
 
     @PostMapping("{deviceId}/cloth")
-    public ApiResponseWrapper<?> getFittingResult(
+    public ApiResponseWrapper<ResponseFittingResultDto> getFittingResult(
             @PathVariable("deviceId") String deviceId,
-            @RequestParam("image") MultipartFile image
+            @RequestPart("modelImage") MultipartFile modelImage,
+            @RequestPart("itemImage") MultipartFile itemImage
     ) {
-        fittingService.tryOnCloth(deviceId, image);
-        return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK);
+        ResponseFittingResultDto  responseFittingResultDto = fittingService.tryOnCloth(deviceId, modelImage, itemImage);
+        return ApiResponseWrapper.onSuccess(SuccessStatus.FITTING_RESULT_CREATED, responseFittingResultDto);
     }
 
 
