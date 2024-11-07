@@ -52,7 +52,7 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DISCORD_USERNAME: WAPP_BOT
+          DISCORD_USERNAME: 임건 노동 착취 봇
           DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
           DISCORD_EMBEDS: |
             [
@@ -68,7 +68,7 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DISCORD_USERNAME: WAPP_BOT
+          DISCORD_USERNAME: 임건 노동 착취 봇
           DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
           DISCORD_EMBEDS: |
             [
