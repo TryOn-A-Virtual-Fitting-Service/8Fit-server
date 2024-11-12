@@ -5,17 +5,19 @@ import com.example.webapplicationserver.apiPayload.exception.handler.FittingExce
 import com.example.webapplicationserver.apiPayload.exception.handler.UserExceptionHandler;
 import com.example.webapplicationserver.converter.ClothConverter;
 import com.example.webapplicationserver.converter.FittingConverter;
+import com.example.webapplicationserver.dto.external.PredictResponseDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.entity.Cloth;
 import com.example.webapplicationserver.entity.Fitting;
 import com.example.webapplicationserver.entity.User;
+import com.example.webapplicationserver.enums.Category;
+import com.example.webapplicationserver.enums.SuperType;
 import com.example.webapplicationserver.repository.ClothRepository;
 import com.example.webapplicationserver.repository.FittingRepository;
 import com.example.webapplicationserver.repository.UserRepository;
 import com.example.webapplicationserver.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
+
+import java.util.Map;
 
 
 @Service
@@ -41,13 +45,18 @@ public class FittingService {
     @Value("${server-uri.fitting}")
     private String fittingServerUri;
 
+    @Value("${server-uri.image-classification-worker}")
+    private String imageClassificationWorkerUri;
+
 
     public ResponseFittingResultDto tryOnCloth(String deviceId, MultipartFile modelImage, MultipartFile clothImage) {
         // get user
         User user = userRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
 
-        // TODO : image classification by image classification worker
+        if (!isFittingAvailable(predictClothImage(clothImage))) {
+            throw new FittingExceptionHandler(ErrorStatus.UNSUPPORTED_CATEGORY);
+        }
 
         // get fitting result from external server
         byte[] resultImage = postToFittingServerAndGetResult(modelImage, clothImage);
@@ -69,18 +78,20 @@ public class FittingService {
     }
 
     public byte[] postToFittingServerAndGetResult(MultipartFile modelImage, MultipartFile clothImage) {
-        String imageUrl = uploadImagesAndGetUrl(modelImage, clothImage);
-        return downloadImageFromUrl(imageUrl);
+        String fileName = uploadImagesAndGetUrlFromFittingServer(modelImage, clothImage);
+        String imageUrl = fittingServerUri + "/static/" + fileName;
+        return downloadImageFromUrl(fileName);
     }
 
-    private String uploadImagesAndGetUrl(MultipartFile modelImage, MultipartFile clothImage) {
+    private String uploadImagesAndGetUrlFromFittingServer(MultipartFile modelImage, MultipartFile clothImage) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
             builder.part("model", modelImage.getResource());
             builder.part("cloth", clothImage.getResource());
+            String targetUri = fittingServerUri + "/inference/";
 
             return webClient.post()
-                    .uri(fittingServerUri)
+                    .uri(targetUri)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
@@ -88,6 +99,7 @@ public class FittingService {
                     .block();
 
         } catch (WebClientException e) {
+            System.out.println(e.getMessage());
             throw new FittingExceptionHandler(ErrorStatus.FITTING_POST_ERROR);
         }
     }
@@ -108,4 +120,35 @@ public class FittingService {
             throw new FittingExceptionHandler(ErrorStatus.FITTING_GET_ERROR);
         }
     }
+
+    private Category predictClothImage(MultipartFile image) {
+        try {
+            MultipartBodyBuilder builder = new MultipartBodyBuilder();
+            builder.part("file", image.getResource());
+            String targetUri = imageClassificationWorkerUri + "/predict";
+
+            PredictResponseDto response = webClient.post()
+                    .uri(targetUri)
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromMultipartData(builder.build()))
+                    .retrieve()
+                    .bodyToMono(PredictResponseDto.class)
+                    .block();
+
+            if (response == null) {
+                throw new FittingExceptionHandler(ErrorStatus.CLASSIFICATION_SEVER_ERROR);
+            }
+            return Category.valueOf(response.class_name());
+
+        } catch (WebClientException e) {
+            throw new FittingExceptionHandler(ErrorStatus.CLASSIFICATION_SEVER_ERROR);
+        }
+    }
+
+    private boolean isFittingAvailable(Category category) {
+        SuperType superType = category.getSuperType();
+        return superType.equals(SuperType.TOP) || superType.equals(SuperType.BOTTOM);
+    }
+
+
 }

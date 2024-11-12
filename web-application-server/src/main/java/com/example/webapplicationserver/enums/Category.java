@@ -4,18 +4,20 @@ import lombok.Getter;
 
 @Getter
 public enum Category {
-    SLEEVELESS("TOP"),
-    SHORT_SLEEVE("TOP"),
-    LONG_SLEEVE("TOP"),
-    SHORT_PANTS("BOTTOM"),
-    LONG_PANTS("BOTTOM"),
-    SHOES("FOOTWEAR"),
-    OUTWEAR("TOP"),
-    ACCESSORY("ACCESSORY");
+    ACCESSORY(SuperType.ACCESSORY),
+    LONG_PANTS(SuperType.BOTTOM),
+    LONG_SLEEVE(SuperType.TOP),
+    OUTWEAR(SuperType.TOP),
+    SHOES(SuperType.FOOTWEAR),
+    SHORT_PANTS(SuperType.BOTTOM),
+    SHORT_SLEEVE(SuperType.TOP),
+    SLEEVELESS(SuperType.TOP);
 
-    private final String superType;
 
-    Category(String superType) {
+    private final SuperType superType;
+
+    Category(SuperType superType) {
         this.superType = superType;
     }
+
 }

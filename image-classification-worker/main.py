@@ -36,14 +36,14 @@ except Exception as e:
 print(f"Model loaded in {time.time() - start_time:.2f} seconds")
 
 class_dictionary = {
-    0: 'Accessories',
-    1: 'LongPants',
-    2: 'LongSleeve',
-    3: 'Outerwear',
-    4: 'Shoes',
-    5: 'ShortPants',
-    6: 'ShortSleeve',
-    7: 'Sleeveless'
+    0: 'ACCESSORY',
+    1: 'LONG_PANTS',
+    2: 'LONG_SLEEVE',
+    3: 'OUTWEAR',
+    4: 'SHOES',
+    5: 'SHORT_PANTS',
+    6: 'SHORT_SLEEVE',
+    7: 'SLEEVELESS'
 }
 
 
@@ -59,24 +59,28 @@ def preprocess_image(image_bytes):
 
 # 예측
 @app.post("/icw/predict")
-async def predict(file: UploadFile = File(...)) -> JSONResponse:
+async def predict(file: UploadFile = File(...)):
     if model is None:
         return JSONResponse(content={"error": "Model could not be loaded"}, status_code=500)
 
     try:
-        print(f"Received file: {file.filename}")
+        print(f"[INFO] Received file: {file.filename}")
         # 이미지 전처리
         image_bytes = await file.read()
         processed_image = preprocess_image(image_bytes)
 
         # 예측
         predictions = model.predict(processed_image)
-        predicted_class_idx = np.argmax(predictions[0])
+        predicted_class_idx = int(np.argmax(predictions[0]))
         predicted_class = class_dictionary[predicted_class_idx]
         confidence = float(predictions[0][predicted_class_idx])
-        print(f"Predicted class: {predicted_class}, confidence: {confidence:.2f}")
+        print(f"[INFO] Predicted class: {predicted_class}, confidence: {confidence:.2f}")
 
-        return JSONResponse(content={"class": predicted_class})
+        return JSONResponse(content={
+            "class_idx": predicted_class_idx,
+            "class_name": predicted_class,
+            "confidence": confidence
+        }, status_code=200)
 
     except Exception as e:
         # 예외가 발생한 경우 상세한 오류 정보 반환
@@ -89,7 +93,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @app.post("/icw/remove-background")
-async def remove_background(file: UploadFile = File(...)) -> JSONResponse:
+async def remove_background(file: UploadFile = File(...)):
     try:
         file_extension = os.path.splitext(file.filename)[1]
         unique_filename = f"{uuid.uuid4()}{file_extension}"
