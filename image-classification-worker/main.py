@@ -9,11 +9,14 @@ import numpy as np
 from PIL import Image
 import io
 import time
+import os
+import uuid
+from rembg import remove
 
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/icw/health")
 def health_check():
     return {"message": "image-classification-worker is running"}
 
@@ -55,8 +58,8 @@ def preprocess_image(image_bytes):
 
 
 # 예측
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+@app.post("/icw/predict")
+async def predict(file: UploadFile = File(...)) -> JSONResponse:
     if model is None:
         return JSONResponse(content={"error": "Model could not be loaded"}, status_code=500)
 
@@ -81,6 +84,39 @@ async def predict(file: UploadFile = File(...)):
         return JSONResponse(content={"error": str(e), "details": error_details}, status_code=500)
 
 
+UPLOAD_DIR = "/shared/images"  # 공유 디렉토리
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+
+@app.post("/icw/remove-background")
+async def remove_background(file: UploadFile = File(...)) -> JSONResponse:
+    try:
+        file_extension = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        input_path = os.path.join(UPLOAD_DIR, unique_filename)
+        output_path = os.path.join(UPLOAD_DIR, f"{uuid.uuid4()}_no_bg_{file.filename}")
+
+        # 업로드된 파일 저장
+        with open(input_path, "wb") as input_file:
+            input_file.write(await file.read())
+
+        # 배경 제거
+        with open(input_path, "rb") as input_file:
+            input_image = input_file.read()
+            output_image = remove(input_image)
+
+        # 결과 저장
+        with open(output_path, "wb") as output_file:
+            output_file.write(output_image)
+
+        return JSONResponse(content={"file_path": output_path}, status_code=200)
+    except Exception as e:
+        error_details = traceback.format_exc()
+        print(f"Error removing background: {error_details}")
+        return JSONResponse(content={"error": str(e), "details": error_details}, status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
