@@ -52,11 +52,26 @@ services:
       interval: 10s
       retries: 5
       timeout: 5s
+    volumes:
+      - shared_data:/shared
     networks:
       - 8Fit-network
 
+  image-classification-worker:
+    container_name: 8fit-image-worker
+    build:
+      context: ./image-classification-worker
+      dockerfile: Dockerfile
+    image: 8fit-image-worker:1.0.0-compose
+    volumes:
+      - shared_data:/shared
+    networks:
+      - 8Fit-network
+
+
 volumes:
   postgres_data:
+  shared_data:
 
 networks:
   8Fit-network:
