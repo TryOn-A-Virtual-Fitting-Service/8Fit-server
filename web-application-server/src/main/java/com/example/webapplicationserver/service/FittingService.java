@@ -5,6 +5,7 @@ import com.example.webapplicationserver.apiPayload.exception.handler.FittingExce
 import com.example.webapplicationserver.apiPayload.exception.handler.UserExceptionHandler;
 import com.example.webapplicationserver.converter.ClothConverter;
 import com.example.webapplicationserver.converter.FittingConverter;
+import com.example.webapplicationserver.dto.external.InferenceResponseDto;
 import com.example.webapplicationserver.dto.external.PredictResponseDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.entity.Cloth;
@@ -54,7 +55,8 @@ public class FittingService {
         User user = userRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
 
-        if (!isFittingAvailable(predictClothImage(clothImage))) {
+        Category clothCategory = predictClothImage(clothImage);
+        if (!isFittingAvailable(clothCategory)) {
             throw new FittingExceptionHandler(ErrorStatus.UNSUPPORTED_CATEGORY);
         }
 
@@ -66,7 +68,7 @@ public class FittingService {
         String resultImageUrl = s3Utils.uploadImage(resultImage);
 
         // save Cloth entity
-        Cloth cloth = ClothConverter.toEntity(clothImageUrl);
+        Cloth cloth = ClothConverter.toEntity(clothImageUrl, clothCategory);
         clothRepository.save(cloth);
 
         // save Fitting entity
@@ -80,26 +82,32 @@ public class FittingService {
     public byte[] postToFittingServerAndGetResult(MultipartFile modelImage, MultipartFile clothImage) {
         String fileName = uploadImagesAndGetUrlFromFittingServer(modelImage, clothImage);
         String imageUrl = fittingServerUri + "/static/" + fileName;
-        return downloadImageFromUrl(fileName);
+        return downloadImageFromUrl(imageUrl);
     }
 
     private String uploadImagesAndGetUrlFromFittingServer(MultipartFile modelImage, MultipartFile clothImage) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
             builder.part("model", modelImage.getResource());
-            builder.part("cloth", clothImage.getResource());
+            builder.part("clothing", clothImage.getResource());
             String targetUri = fittingServerUri + "/inference/";
 
-            return webClient.post()
+            InferenceResponseDto response = webClient.post()
                     .uri(targetUri)
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(InferenceResponseDto.class)
                     .block();
+
+            if (response == null) {
+                throw new FittingExceptionHandler(ErrorStatus.FITTING_POST_ERROR);
+            }
+            return response.data();
 
         } catch (WebClientException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new FittingExceptionHandler(ErrorStatus.FITTING_POST_ERROR);
         }
     }
@@ -109,7 +117,6 @@ public class FittingService {
             if (imageUrl == null || imageUrl.isEmpty()) {
                 throw new FittingExceptionHandler(ErrorStatus.FITTING_GET_ERROR);
             }
-
             return webClient.get()
                     .uri(imageUrl)
                     .retrieve()
@@ -117,6 +124,8 @@ public class FittingService {
                     .block();
 
         } catch (WebClientException e) {
+            e.printStackTrace();
+            System.err.println("[ERROR] Failed to download image from URL: " + imageUrl + " - " + e.getMessage());
             throw new FittingExceptionHandler(ErrorStatus.FITTING_GET_ERROR);
         }
     }
