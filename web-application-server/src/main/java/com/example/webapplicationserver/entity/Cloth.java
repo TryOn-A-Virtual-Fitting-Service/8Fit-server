@@ -20,14 +20,14 @@ public class Cloth extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true, name = "category")
+    @Column(nullable = false, name = "category")
     private Category category;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = true, name = "site")
     private Site site;
 
-    @Column(nullable = true, length = 255, name = "cloth_image_url")
+    @Column(nullable = false, length = 255, name = "cloth_image_url")
     private String imageUrl;
 
     @Column(nullable = true, length = 255, name = "product_page_url")

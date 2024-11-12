@@ -64,3 +64,4 @@ springdoc:
 
 server-uri:
   fitting: ${FITTING_SERVER_URI}
+  image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_PROD}

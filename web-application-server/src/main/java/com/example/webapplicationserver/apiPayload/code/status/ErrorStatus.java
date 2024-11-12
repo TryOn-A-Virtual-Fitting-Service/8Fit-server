@@ -25,7 +25,11 @@ public enum ErrorStatus implements BaseErrorCode {
     FITTING_GET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 GET 응답에서 에러가 발생했습니다."),
     FITTING_WEBCLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 서버 통신 과정에서 에러가 발생했습니다."),
 
-    CLASSIFICATION_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "이미지 분류 서버 통신 과정에서 에러가 발생했습니다."),
+    CLASSIFICATION_SEVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_PREDICT500", "이미지 분류 서버 통신 과정에서 에러가 발생했습니다."),
+    CLASSIFICATION_INDEX_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_PREDICT404", "이미지 분류 서버 응답 인덱싱 에러가 발생했습니다."),
+    REMOVE_BACKGROUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_REMBG500", "배경 제거 서버 통신 과정에서 에러가 발생했습니다."),
+    UNSUPPORTED_CATEGORY(HttpStatus.BAD_REQUEST, "UNSUPPORTED_CATEGORY", "지원하지 않는 카테고리입니다."),
+
     ;
 
     private final HttpStatus httpStatus;

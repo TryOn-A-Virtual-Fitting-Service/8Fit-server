@@ -464,3 +464,9 @@ modules.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij+iml,intellij+all
 /http-client.private.env.json
+
+
+*.png
+*.jpg
+*.jpeg
+*.gif
