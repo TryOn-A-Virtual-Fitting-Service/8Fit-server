@@ -26,7 +26,6 @@ jobs:
           echo "FITTING_SERVER_URI=${{ secrets.FITTING_SERVER_URI }}" >> .env
           echo "IMAGE_CLASSIFICATION_SERVER_URI_PROD=${{ secrets.IMAGE_CLASSIFICATION_SERVER_URI_PROD }}" >> .env
           
-
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
