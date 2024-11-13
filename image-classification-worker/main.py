@@ -12,6 +12,7 @@ import time
 import os
 import uuid
 from rembg import remove
+from starlette.responses import StreamingResponse
 
 app = FastAPI()
 
@@ -93,27 +94,11 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @app.post("/icw/remove-background")
-async def remove_background(file: UploadFile = File(...)):
+async def remove_background(file: bytes = File(...)):
     try:
-        file_extension = os.path.splitext(file.filename)[1]
-        unique_filename = f"{uuid.uuid4()}{file_extension}"
-        input_path = os.path.join(UPLOAD_DIR, unique_filename)
-        output_path = os.path.join(UPLOAD_DIR, f"{uuid.uuid4()}_no_bg_{file.filename}")
+        output_image = remove(file)
+        return StreamingResponse(io.BytesIO(output_image), media_type="image/png")
 
-        # 업로드된 파일 저장
-        with open(input_path, "wb") as input_file:
-            input_file.write(await file.read())
-
-        # 배경 제거
-        with open(input_path, "rb") as input_file:
-            input_image = input_file.read()
-            output_image = remove(input_image)
-
-        # 결과 저장
-        with open(output_path, "wb") as output_file:
-            output_file.write(output_image)
-
-        return JSONResponse(content={"file_path": output_path}, status_code=200)
     except Exception as e:
         error_details = traceback.format_exc()
         print(f"Error removing background: {error_details}")
