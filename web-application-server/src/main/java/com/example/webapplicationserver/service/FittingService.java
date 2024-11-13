@@ -16,6 +16,7 @@ import com.example.webapplicationserver.enums.SuperType;
 import com.example.webapplicationserver.repository.ClothRepository;
 import com.example.webapplicationserver.repository.FittingRepository;
 import com.example.webapplicationserver.repository.UserRepository;
+import com.example.webapplicationserver.utils.ImageProcessUtils;
 import com.example.webapplicationserver.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,11 +39,13 @@ public class FittingService {
     private final FittingRepository fittingRepository;
     private final ClothRepository clothRepository;
 
-    // utilize S3
+    // utilize
     private final S3Utils s3Utils;
+    private final ImageProcessUtils imageProcessUtils;
 
-    // webClient Bean
+    // webClient
     private final WebClient webClient;
+
     @Value("${server-uri.fitting}")
     private String fittingServerUri;
 
@@ -63,9 +66,13 @@ public class FittingService {
         // get fitting result from external server
         byte[] resultImage = postToFittingServerAndGetResult(modelImage, clothImage);
 
+        // Apply Remove Background API to the result image
+        byte[] backgroundRemovedResultImage = imageProcessUtils.removeBackground(resultImage);
+
+
         // upload fitting result image and Cloth image
         String clothImageUrl = s3Utils.uploadImage(clothImage);
-        String resultImageUrl = s3Utils.uploadImage(resultImage);
+        String resultImageUrl = s3Utils.uploadImage(backgroundRemovedResultImage);
 
         // save Cloth entity
         Cloth cloth = ClothConverter.toEntity(clothImageUrl, clothCategory);
@@ -108,14 +115,14 @@ public class FittingService {
         } catch (WebClientException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-            throw new FittingExceptionHandler(ErrorStatus.FITTING_POST_ERROR);
+            throw new FittingExceptionHandler(ErrorStatus.FITTING_WEBCLIENT_ERROR);
         }
     }
 
     private byte[] downloadImageFromUrl(String imageUrl) {
         try {
             if (imageUrl == null || imageUrl.isEmpty()) {
-                throw new FittingExceptionHandler(ErrorStatus.FITTING_GET_ERROR);
+                throw new FittingExceptionHandler(ErrorStatus.EMPTY_IMAGE_URL);
             }
             return webClient.get()
                     .uri(imageUrl)
@@ -126,7 +133,7 @@ public class FittingService {
         } catch (WebClientException e) {
             e.printStackTrace();
             System.err.println("[ERROR] Failed to download image from URL: " + imageUrl + " - " + e.getMessage());
-            throw new FittingExceptionHandler(ErrorStatus.FITTING_GET_ERROR);
+            throw new FittingExceptionHandler(ErrorStatus.FITTING_WEBCLIENT_ERROR);
         }
     }
 
@@ -145,7 +152,7 @@ public class FittingService {
                     .block();
 
             if (response == null) {
-                throw new FittingExceptionHandler(ErrorStatus.CLASSIFICATION_SEVER_ERROR);
+                throw new FittingExceptionHandler(ErrorStatus.CLASSIFICATION_INDEX_ERROR);
             }
             return Category.valueOf(response.class_name());
 
@@ -158,6 +165,8 @@ public class FittingService {
         SuperType superType = category.getSuperType();
         return superType.equals(SuperType.TOP) || superType.equals(SuperType.BOTTOM);
     }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.webapplicationserver.service;
 import com.example.webapplicationserver.apiPayload.code.status.ErrorStatus;
+import com.example.webapplicationserver.apiPayload.exception.handler.FittingExceptionHandler;
 import com.example.webapplicationserver.apiPayload.exception.handler.S3ExceptionHandler;
 import com.example.webapplicationserver.apiPayload.exception.handler.UserExceptionHandler;
 import com.example.webapplicationserver.converter.FittingModelConverter;
@@ -8,6 +9,7 @@ import com.example.webapplicationserver.entity.FittingModel;
 import com.example.webapplicationserver.entity.User;
 import com.example.webapplicationserver.repository.FittingModelRepository;
 import com.example.webapplicationserver.repository.UserRepository;
+import com.example.webapplicationserver.utils.ImageProcessUtils;
 import com.example.webapplicationserver.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +25,10 @@ public class FittingModelService {
     private final FittingModelRepository fittingModelRepository;
     private final UserRepository userRepository;
 
-    // utilize S3
+    // utilize
     private final S3Utils s3Utils;
+    private final ImageProcessUtils imageProcessUtils;
+
 
     @Transactional
     public ResponseFittingModelDto uploadFittingModel(String deviceId, MultipartFile image) {
@@ -36,8 +40,17 @@ public class FittingModelService {
         User user = userRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
 
+        // remove background from image
+        byte[] imageBytes;
+        try {
+             imageBytes = image.getBytes();
+        } catch (Exception e) {
+            throw new FittingExceptionHandler(ErrorStatus.BYTES_CONVERSION_ERROR);
+        }
+        byte[] backgroundRemovedImage = imageProcessUtils.removeBackground(imageBytes);
+
         // upload fitting model image
-        String modelUrl = s3Utils.uploadImage(image);
+        String modelUrl = s3Utils.uploadImage(backgroundRemovedImage);
 
         // save fitting model
         FittingModel fittingModel = FittingModelConverter.toEntity(modelUrl, user);
@@ -45,4 +58,7 @@ public class FittingModelService {
 
         return FittingModelConverter.toResponseFittingModelDto(fittingModel);
     }
+
+
+
 }
