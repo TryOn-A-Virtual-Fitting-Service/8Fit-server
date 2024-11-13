@@ -24,11 +24,14 @@ public enum ErrorStatus implements BaseErrorCode {
     FITTING_POST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 POST 응답에서 에러가 발생했습니다."),
     FITTING_GET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 GET 응답에서 에러가 발생했습니다."),
     FITTING_WEBCLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 서버 통신 과정에서 에러가 발생했습니다."),
+    BYTES_CONVERSION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "BYTES500", "바이트 변환 중 에러가 발생했습니다."),
 
     CLASSIFICATION_SEVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_PREDICT500", "이미지 분류 서버 통신 과정에서 에러가 발생했습니다."),
     CLASSIFICATION_INDEX_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_PREDICT404", "이미지 분류 서버 응답 인덱싱 에러가 발생했습니다."),
-    REMOVE_BACKGROUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_REMBG500", "배경 제거 서버 통신 과정에서 에러가 발생했습니다."),
-    UNSUPPORTED_CATEGORY(HttpStatus.BAD_REQUEST, "UNSUPPORTED_CATEGORY", "지원하지 않는 카테고리입니다."),
+    REMOVE_REMOVAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_REMBG500", "배경 제거 서버 통신 과정에서 에러가 발생했습니다."),
+    REMOVE_REMOVAL_ACTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_REMBG404", "배경 제거 서버 응답이 비어있습니다."),
+    UNSUPPORTED_CATEGORY(HttpStatus.BAD_REQUEST, "UNSUPPORTED_CATEGORY400", "지원하지 않는 카테고리입니다."),
+    EMPTY_IMAGE_URL(HttpStatus.BAD_REQUEST, "EMPTY_IMAGE_URL400", "이미지 URL이 비어있습니다."),
 
     ;
 
