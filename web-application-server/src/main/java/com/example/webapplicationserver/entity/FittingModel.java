@@ -39,7 +39,7 @@ public class FittingModel extends BaseEntity {
 
         // set new relation
         this.user = user;
-        if (user != null && !user.getFittingModels().contains(this)) {
+        if (user != null) {
             user.getFittingModels().add(this);
         }
     }
