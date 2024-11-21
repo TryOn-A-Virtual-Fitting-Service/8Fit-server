@@ -72,21 +72,19 @@ alter table fittings
 -- Insert mock data
 -- Insert users
 insert into users (created_at, updated_at, device_id) values
-    ('2024-11-01 10:00:00', '2024-11-01 10:00:00', 'validDeviceId123');
+('2024-11-01 10:00:00', '2024-11-01 10:00:00', 'validDeviceId123');
 
 -- Insert clothes
 insert into clothes (created_at, updated_at, category, cloth_image_url, product_page_url, site) values
-('2024-11-06 01:33:53.853651', '2024-11-06 01:33:53.853651', 'SHORT_SLEEVE', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/cloth1.jpg', null, 'MUSINSA'),
-('2024-11-06 01:34:00.123456', '2024-11-06 01:34:00.123456', 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/cloth2.jpg', null, 'ZIGZAG');
+('2024-11-06 01:33:53.853651', '2024-11-06 01:33:53.853651', 'SHORT_SLEEVE', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/341b53c4-551f-49ca-b4f6-672aa142770a_mockCloth2.jpg', null, 'MUSINSA'),
+('2024-11-06 01:34:00.123456', '2024-11-06 01:34:00.123456', 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/341b53c4-551f-49ca-b4f6-672aa142770a_mockCloth2.jpg', null, 'ZIGZAG');
 
 -- Insert fitting models
 insert into fitting_models (created_at, updated_at, user_id, model_image_url) values
-('2024-11-06 01:30:00.000000', '2024-11-06 01:30:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/model1.jpg'),
-('2024-11-06 01:31:00.000000', '2024-11-06 01:31:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/model2.jpg');
+('2024-11-06 01:30:00.000000', '2024-11-06 01:30:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/a0161c06-cffa-42e7-b44f-bb4066c3570c.png'),
+('2024-11-06 01:31:00.000000', '2024-11-06 01:31:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/a0161c06-cffa-42e7-b44f-bb4066c3570c.png');
 
 -- Insert fittings
 insert into fittings (created_at, updated_at, fitting_model_id, cloth_id, result_image_url, llm_advice) values
-('2024-11-06 01:35:00.111111', '2024-11-06 01:35:00.111111', 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/fitting1.jpg', 'Advice 1'),
-('2024-11-06 01:36:00.222222', '2024-11-06 01:36:00.222222', 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/fitting2.jpg', 'Advice 2'),
-('2024-11-06 01:37:00.333333', '2024-11-06 01:37:00.333333', 2, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/fitting3.jpg', 'Advice 3'),
-('2024-11-06 01:38:00.444444', '2024-11-06 01:38:00.444444', 2, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/fitting4.jpg', 'Advice 4');
+('2024-11-06 01:35:00.111111', '2024-11-06 01:35:00.111111', 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/32422ad6-0b8a-4f71-8075-5728b8286a14.png', 'Advice 1'),
+('2024-11-06 01:36:00.222222', '2024-11-06 01:36:00.222222', 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/32422ad6-0b8a-4f71-8075-5728b8286a14.png', 'Advice 2');
