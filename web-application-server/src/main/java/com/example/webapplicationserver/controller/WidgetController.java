@@ -58,13 +58,13 @@ public class WidgetController {
         return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
     }
 
-    @PostMapping("{deviceId}/cloth")
+    @PostMapping("{deviceId}/cloth/{modelId}")
     public ApiResponseWrapper<ResponseFittingResultDto> getFittingResult(
             @PathVariable("deviceId") String deviceId,
-            @RequestPart("modelImage") MultipartFile modelImage,
+            @PathVariable("modelId") Long modelId,
             @RequestPart("itemImage") MultipartFile itemImage
     ) {
-        ResponseFittingResultDto  responseFittingResultDto = fittingService.tryOnCloth(deviceId, modelImage, itemImage);
+        ResponseFittingResultDto  responseFittingResultDto = fittingService.tryOnCloth(deviceId, modelId, itemImage);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FITTING_RESULT_CREATED, responseFittingResultDto);
     }
 

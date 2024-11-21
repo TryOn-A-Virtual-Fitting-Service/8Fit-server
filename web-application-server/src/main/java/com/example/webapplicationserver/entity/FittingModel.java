@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class FittingModel extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @Setter
     @Column(nullable = false, length = 255, name = "model_image_url")
     private String imageUrl;
 

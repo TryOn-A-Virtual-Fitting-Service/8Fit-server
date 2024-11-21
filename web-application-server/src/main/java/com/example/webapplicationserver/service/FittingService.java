@@ -10,19 +10,24 @@ import com.example.webapplicationserver.dto.external.PredictResponseDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.entity.Cloth;
 import com.example.webapplicationserver.entity.Fitting;
+import com.example.webapplicationserver.entity.FittingModel;
 import com.example.webapplicationserver.entity.User;
 import com.example.webapplicationserver.enums.Category;
 import com.example.webapplicationserver.enums.SuperType;
 import com.example.webapplicationserver.repository.ClothRepository;
+import com.example.webapplicationserver.repository.FittingModelRepository;
 import com.example.webapplicationserver.repository.FittingRepository;
 import com.example.webapplicationserver.repository.UserRepository;
 import com.example.webapplicationserver.utils.ImageProcessUtils;
 import com.example.webapplicationserver.utils.S3Utils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,12 +37,14 @@ import java.util.Map;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FittingService {
     // repository layer
     private final UserRepository userRepository;
     private final FittingRepository fittingRepository;
     private final ClothRepository clothRepository;
+    private final FittingModelRepository fittingModelRepository;
 
     // utilize
     private final S3Utils s3Utils;
@@ -53,49 +60,81 @@ public class FittingService {
     private String imageClassificationWorkerUri;
 
 
-    public ResponseFittingResultDto tryOnCloth(String deviceId, MultipartFile modelImage, MultipartFile clothImage) {
-        // get user
-        User user = userRepository.findByDeviceId(deviceId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
+    @Transactional
+    public ResponseFittingResultDto tryOnCloth(String deviceId, Long modelId, MultipartFile clothImage) {
+        // 1. 유저 조회
+        User user = getUser(deviceId);
 
+        // 2. 카테고리 예측 및 지원 여부 확인
         Category clothCategory = predictClothImage(clothImage);
+        validateFittingCategory(clothCategory);
+
+        // 3. 모델 이미지 다운로드 및 피팅 결과 처리
+        FittingModel fittingModel = getFittingModel(modelId);
+        byte[] modelImage = downloadImageFromUrl(fittingModel.getImageUrl());
+        byte[] fittingResultImage = processFittingImage(modelImage, clothImage);
+
+        // 4. S3 업로드
+        String clothImageUrl = s3Utils.uploadImage(clothImage);
+        String resultImageUrl = s3Utils.uploadImage(fittingResultImage);
+
+        // 5. 데이터 저장
+        Cloth cloth = saveCloth(clothImageUrl, clothCategory);
+        Fitting fitting = saveFitting(resultImageUrl, user, cloth);
+        updateFittingModelImage(fittingModel, resultImageUrl);
+
+        // 6. 결과 반환
+        return FittingConverter.toResponseFittingResultDto(fitting);
+    }
+
+
+    private User getUser(String deviceId) {
+        return userRepository.findByDeviceId(deviceId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    private void validateFittingCategory(Category clothCategory) {
         if (!isFittingAvailable(clothCategory)) {
             throw new FittingExceptionHandler(ErrorStatus.UNSUPPORTED_CATEGORY);
         }
-
-        // get fitting result from external server
-        byte[] resultImage = postToFittingServerAndGetResult(modelImage, clothImage);
-
-        // Apply Remove Background API to the result image
-        byte[] backgroundRemovedResultImage = imageProcessUtils.removeBackground(resultImage);
-
-
-        // upload fitting result image and Cloth image
-        String clothImageUrl = s3Utils.uploadImage(clothImage);
-        String resultImageUrl = s3Utils.uploadImage(backgroundRemovedResultImage);
-
-        // save Cloth entity
-        Cloth cloth = ClothConverter.toEntity(clothImageUrl, clothCategory);
-        clothRepository.save(cloth);
-
-        // save Fitting entity
-        Fitting fitting = FittingConverter.toEntity(resultImageUrl, user, cloth);
-        fittingRepository.save(fitting);
-
-        return FittingConverter.toResponseFittingResultDto(fitting);
-
     }
 
-    public byte[] postToFittingServerAndGetResult(MultipartFile modelImage, MultipartFile clothImage) {
+    private FittingModel getFittingModel(Long modelId) {
+        return fittingModelRepository.findById(modelId)
+                .orElseThrow(() -> new FittingExceptionHandler(ErrorStatus.MODEL_NOT_FOUND));
+    }
+
+    private byte[] processFittingImage(byte[] modelImage, MultipartFile clothImage) {
+        byte[] resultImage = postToFittingServerAndGetResult(modelImage, clothImage);
+        return imageProcessUtils.removeBackground(resultImage);
+    }
+
+    private Cloth saveCloth(String clothImageUrl, Category clothCategory) {
+        Cloth cloth = ClothConverter.toEntity(clothImageUrl, clothCategory);
+        return clothRepository.save(cloth);
+    }
+
+    private Fitting saveFitting(String resultImageUrl, User user, Cloth cloth) {
+        Fitting fitting = FittingConverter.toEntity(resultImageUrl, user, cloth);
+        return fittingRepository.save(fitting);
+    }
+
+    private void updateFittingModelImage(FittingModel fittingModel, String resultImageUrl) {
+        fittingModel.setImageUrl(resultImageUrl);
+    }
+
+
+    public byte[] postToFittingServerAndGetResult(byte[] modelImage, MultipartFile clothImage) {
         String fileName = uploadImagesAndGetUrlFromFittingServer(modelImage, clothImage);
         String imageUrl = fittingServerUri + "/static/" + fileName;
         return downloadImageFromUrl(imageUrl);
     }
 
-    private String uploadImagesAndGetUrlFromFittingServer(MultipartFile modelImage, MultipartFile clothImage) {
+    private String uploadImagesAndGetUrlFromFittingServer(byte[] modelImage, MultipartFile clothImage) {
         try {
             MultipartBodyBuilder builder = new MultipartBodyBuilder();
-            builder.part("model", modelImage.getResource());
+            builder.part("model", new ByteArrayResource(modelImage))
+                    .header("Content-Disposition", "form-data; name=model; filename=model.jpg");
             builder.part("clothing", clothImage.getResource());
             String targetUri = fittingServerUri + "/inference/";
 
@@ -112,7 +151,7 @@ public class FittingService {
             }
             return response.data();
 
-        } catch (WebClientException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
             throw new FittingExceptionHandler(ErrorStatus.FITTING_WEBCLIENT_ERROR);
