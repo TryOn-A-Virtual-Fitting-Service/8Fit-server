@@ -80,7 +80,7 @@ public class FittingService {
 
         // 5. 데이터 저장
         Cloth cloth = saveCloth(clothImageUrl, clothCategory);
-        Fitting fitting = saveFitting(resultImageUrl, user, cloth);
+        Fitting fitting = saveFitting(resultImageUrl, fittingModel, cloth);
         updateFittingModelImage(fittingModel, resultImageUrl);
 
         // 6. 결과 반환
@@ -114,8 +114,8 @@ public class FittingService {
         return clothRepository.save(cloth);
     }
 
-    private Fitting saveFitting(String resultImageUrl, User user, Cloth cloth) {
-        Fitting fitting = FittingConverter.toEntity(resultImageUrl, user, cloth);
+    private Fitting saveFitting(String resultImageUrl, FittingModel fittingModel, Cloth cloth) {
+        Fitting fitting = FittingConverter.toEntity(resultImageUrl, fittingModel, cloth);
         return fittingRepository.save(fitting);
     }
 

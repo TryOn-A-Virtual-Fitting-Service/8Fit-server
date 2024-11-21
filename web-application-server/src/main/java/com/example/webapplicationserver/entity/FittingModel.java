@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -25,6 +29,11 @@ public class FittingModel extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "fittingModel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("id DESC")
+    private final Set<Fitting> fittings = new LinkedHashSet<>();
+
+
     @Builder(builderMethodName = "createFittingModel")
     public FittingModel(String imageUrl, User user) {
         this.imageUrl = imageUrl;
@@ -42,5 +51,16 @@ public class FittingModel extends BaseEntity {
         if (user != null) {
             user.getFittingModels().add(this);
         }
+    }
+
+
+    public void addFitting(Fitting fitting) {
+        fittings.add(fitting);
+        fitting.setFittingModel(this);
+    }
+
+    public void removeFitting(Fitting fitting) {
+        fittings.remove(fitting);
+        fitting.setFittingModel(null);
     }
 }
