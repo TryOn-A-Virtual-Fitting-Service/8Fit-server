@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -16,12 +21,18 @@ public class FittingModel extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @Setter
     @Column(nullable = false, length = 255, name = "model_image_url")
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "fittingModel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("id DESC")
+    private final Set<Fitting> fittings = new LinkedHashSet<>();
+
 
     @Builder(builderMethodName = "createFittingModel")
     public FittingModel(String imageUrl, User user) {
@@ -37,8 +48,19 @@ public class FittingModel extends BaseEntity {
 
         // set new relation
         this.user = user;
-        if (user != null && !user.getFittingModels().contains(this)) {
+        if (user != null) {
             user.getFittingModels().add(this);
         }
+    }
+
+
+    public void addFitting(Fitting fitting) {
+        fittings.add(fitting);
+        fitting.setFittingModel(this);
+    }
+
+    public void removeFitting(Fitting fitting) {
+        fittings.remove(fitting);
+        fitting.setFittingModel(null);
     }
 }

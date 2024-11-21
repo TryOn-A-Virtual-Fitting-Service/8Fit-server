@@ -21,6 +21,8 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_EMPTY(HttpStatus.BAD_REQUEST, "FILE400", "파일이 비어있습니다."),
 
     // Fitting
+    MODEL_NOT_FOUND(HttpStatus.NOT_FOUND, "MODEL404", "모델을 찾을 수 없습니다."),
+
     FITTING_POST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 POST 응답에서 에러가 발생했습니다."),
     FITTING_GET_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 GET 응답에서 에러가 발생했습니다."),
     FITTING_WEBCLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL500", "가상 피팅 서버 통신 과정에서 에러가 발생했습니다."),

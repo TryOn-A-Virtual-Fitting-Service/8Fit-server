@@ -23,7 +23,7 @@ jobs:
           echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> .env
           echo "AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}" >> .env
           echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
-          echo "FITTING_SERVER_URI=${{ secrets.FITTING_SERVER_URI }}" >> .env
+          echo "FITTING_SERVER_URI_PROD=${{ secrets.FITTING_SERVER_URI_PROD }}" >> .env
           echo "IMAGE_CLASSIFICATION_SERVER_URI_PROD=${{ secrets.IMAGE_CLASSIFICATION_SERVER_URI_PROD }}" >> .env
           
       - name: Copy .env file to EC2
