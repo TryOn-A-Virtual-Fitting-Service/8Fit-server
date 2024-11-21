@@ -93,3 +93,14 @@ insert into fittings (created_at, updated_at, user_id, cloth_id, result_image_ur
 ('2024-11-06 01:35:25.666666', '2024-11-06 01:35:25.666666', 1, 6, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png'),
 ('2024-11-06 01:35:30.777777', '2024-11-06 01:35:30.777777', 1, 7, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
 ('2024-11-06 01:35:35.888888', '2024-11-06 01:35:35.888888', 1, 8, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/d1527dab-34aa-4389-bb53-848c18ef3223_mockFittingResult2.png');
+
+-- Insert mock data into fitting_models table
+insert into fitting_models (created_at, updated_at, user_id, model_image_url) values
+('2024-11-06 01:30:00.000000', '2024-11-06 01:30:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:31:00.000000', '2024-11-06 01:31:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:32:00.000000', '2024-11-06 01:32:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:33:00.000000', '2024-11-06 01:33:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:34:00.000000', '2024-11-06 01:34:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:35:00.000000', '2024-11-06 01:35:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:36:00.000000', '2024-11-06 01:36:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png'),
+('2024-11-06 01:37:00.000000', '2024-11-06 01:37:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/b75bc54e-4cc6-476b-82dc-3aac0f615d32_mockFittingResult.png');
