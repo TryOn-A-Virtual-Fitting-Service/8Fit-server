@@ -29,30 +29,29 @@ public class Fitting extends BaseEntity {
     private Cloth cloth;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "fitting_model_id", nullable = false)
+    private FittingModel fittingModel;
 
-    private LocalDateTime createdAt;
 
     @Builder(builderMethodName = "createFitting")
-    public Fitting(String imageUrl, String llmAdvice, Cloth cloth, User user) {
+    public Fitting(String imageUrl, String llmAdvice, Cloth cloth, FittingModel fittingModel) {
         this.imageUrl = imageUrl;
         this.llmAdvice = llmAdvice;
         this.cloth = cloth;
-        this.createdAt = LocalDateTime.now();
-        setUser(user);
+        setFittingModel(fittingModel);
     }
 
-    public void setUser(User user) {
+
+    public void setFittingModel(FittingModel fittingModel) {
         // remove existing relation
-        if (this.user != null) {
-            this.user.getFittings().remove(this);
+        if (this.fittingModel != null) {
+            this.fittingModel.getFittings().remove(this);
         }
 
         // set new relation
-        this.user = user;
-        if (user != null) {
-            user.getFittings().add(this);
+        this.fittingModel = fittingModel;
+        if (fittingModel != null) {
+            fittingModel.getFittings().add(this);
         }
     }
 }

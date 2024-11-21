@@ -20,11 +20,9 @@ public class User extends BaseEntity {
     private String deviceId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final Set<FittingModel> fittingModels = new HashSet<>();
+    @OrderBy("id DESC")
+    private final Set<FittingModel> fittingModels = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OrderBy("createdAt DESC")
-    private final Set<Fitting> fittings = new LinkedHashSet<>();
 
     @Builder(builderMethodName = "createUser")
     public User(String deviceId) {
@@ -42,15 +40,6 @@ public class User extends BaseEntity {
         fittingModel.setUser(null);
     }
 
-    public void addFitting(Fitting fitting) {
-        fittings.add(fitting);
-        fitting.setUser(this);
-    }
-
-    public void removeFitting(Fitting fitting) {
-        fittings.remove(fitting);
-        fitting.setUser(null);
-    }
 }
 
 

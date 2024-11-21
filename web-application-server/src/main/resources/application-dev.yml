@@ -24,6 +24,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 5
+      connection-timeout: 15000
+      idle-timeout: 300000
+      max-lifetime: 1800000
 
   jpa:
     hibernate:
@@ -63,7 +69,7 @@ springdoc:
 
 
 server-uri:
-  fitting: ${FITTING_SERVER_URI}
+  fitting: ${FITTING_SERVER_URI_DEV}
   image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_DEV}
 
 
