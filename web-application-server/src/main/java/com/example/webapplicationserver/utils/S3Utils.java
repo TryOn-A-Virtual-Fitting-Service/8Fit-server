@@ -26,6 +26,11 @@ public class S3Utils {
     @Value("${spring.cloud.aws.region.static}")
     private String region;
 
+    @Value("${server-uri.domain}")
+    private String domain;
+
+
+
     public String uploadImage(MultipartFile image) {
         // set unique file name
         String imageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
@@ -45,16 +50,16 @@ public class S3Utils {
         }
         log.info("File uploaded to S3: {}", imageName);
 
-        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + imageName;
+        return domain + "/" + imageName;
     }
 
     public String uploadImage(byte[] image) {
         // object to upload to S3
-        String fileName = UUID.randomUUID() + ".png";
+        String imageName = UUID.randomUUID() + ".png";
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .key(fileName)
+                .key(imageName)
                 .contentType("image/png")
                 .build();
 
@@ -64,8 +69,8 @@ public class S3Utils {
         } catch (Exception e) {
             throw new S3ExceptionHandler(ErrorStatus.FILE_UPLOAD_ERROR);
         }
-        log.info("File uploaded to S3: {}", fileName);
+        log.info("File uploaded to S3: {}", imageName);
 
-        return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
+        return domain + "/" + imageName;
     }
 }

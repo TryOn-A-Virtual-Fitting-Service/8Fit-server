@@ -55,7 +55,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USERNAME: 임건 노동 착취 봇
-          DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
+          DISCORD_AVATAR: ${{ secrets.LIM_GUN }}
           DISCORD_EMBEDS: |
             [
               { 
@@ -71,7 +71,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_USERNAME: 임건 노동 착취 봇
-          DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
+          DISCORD_AVATAR: ${{ secrets.LIM_GUN }}
           DISCORD_EMBEDS: |
             [
               { 
