@@ -33,7 +33,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -71,5 +71,5 @@ springdoc:
 server-uri:
   fitting: ${FITTING_SERVER_URI_DEV}
   image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_DEV}
-
+  domain: ${DOMAIN}
 
