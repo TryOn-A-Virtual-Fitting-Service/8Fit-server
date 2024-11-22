@@ -76,15 +76,15 @@ insert into users (created_at, updated_at, device_id) values
 
 -- Insert clothes
 insert into clothes (created_at, updated_at, category, cloth_image_url, product_page_url, site) values
-('2024-11-06 01:33:53.853651', '2024-11-06 01:33:53.853651', 'SHORT_SLEEVE', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/341b53c4-551f-49ca-b4f6-672aa142770a_mockCloth2.jpg', null, 'MUSINSA'),
-('2024-11-06 01:34:00.123456', '2024-11-06 01:34:00.123456', 'LONG_PANTS', 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/341b53c4-551f-49ca-b4f6-672aa142770a_mockCloth2.jpg', null, 'ZIGZAG');
+('2024-11-06 01:33:53.853651', '2024-11-06 01:33:53.853651', 'SHORT_SLEEVE', 'https://8fit.xyz/0379bf6c-07e1-4f72-a52c-c7a9366f911c_mockCloth2.jpg', null, 'MUSINSA'),
+('2024-11-06 01:34:00.123456', '2024-11-06 01:34:00.123456', 'LONG_PANTS', 'https://8fit.xyz/e088059e-12ae-48e1-bd80-344bcba8bbe5_mockCloth2.jpg', null, 'ZIGZAG');
 
 -- Insert fitting models
 insert into fitting_models (created_at, updated_at, user_id, model_image_url) values
-('2024-11-06 01:30:00.000000', '2024-11-06 01:30:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/a0161c06-cffa-42e7-b44f-bb4066c3570c.png'),
-('2024-11-06 01:31:00.000000', '2024-11-06 01:31:00.000000', 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/a0161c06-cffa-42e7-b44f-bb4066c3570c.png');
+('2024-11-06 01:30:00.000000', '2024-11-06 01:30:00.000000', 1, 'https://8fit.xyz/c791f273-d60a-4d15-b9f1-e081a528d57a.png'),
+('2024-11-06 01:31:00.000000', '2024-11-06 01:31:00.000000', 1, 'https://8fit.xyz/4887a51e-2e8b-42ee-9ac1-18cace5527ea.png');
 
 -- Insert fittings
 insert into fittings (created_at, updated_at, fitting_model_id, cloth_id, result_image_url, llm_advice) values
-('2024-11-06 01:35:00.111111', '2024-11-06 01:35:00.111111', 1, 1, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/32422ad6-0b8a-4f71-8075-5728b8286a14.png', 'Advice 1'),
-('2024-11-06 01:36:00.222222', '2024-11-06 01:36:00.222222', 1, 2, 'https://8fit-bucket.s3.ap-northeast-2.amazonaws.com/32422ad6-0b8a-4f71-8075-5728b8286a14.png', 'Advice 2');
+('2024-11-06 01:35:00.111111', '2024-11-06 01:35:00.111111', 1, 1, 'https://8fit.xyz/b4ee7c6d-bce5-4e62-b369-d0c2cbf2f7a3.png', 'Advice 1'),
+('2024-11-06 01:36:00.222222', '2024-11-06 01:36:00.222222', 1, 2, 'https://8fit.xyz/c791f273-d60a-4d15-b9f1-e081a528d57a.png', 'Advice 2');
