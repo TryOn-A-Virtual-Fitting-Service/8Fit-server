@@ -30,7 +30,6 @@ public class WidgetController {
     private final WidgetService widgetService;
     private final FittingModelService fittingModelService;
     private final FittingService fittingService;
-    private final OpenAIStreamService openAIStreamService;
 
     @Operation(summary = "Get widget information for specific device", description = "Get widget information by device id")
     @ApiResponses(value = {
@@ -71,13 +70,6 @@ public class WidgetController {
     ) {
         ResponseFittingResultDto  responseFittingResultDto = fittingService.tryOnCloth(deviceId, modelId, itemImage);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FITTING_RESULT_CREATED, responseFittingResultDto);
-    }
-
-    @PostMapping(value = "size", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> getSizeStreamChat(
-            @RequestBody RequestSizeChatDto requestSizeChatDto
-            ) {
-        return openAIStreamService.streamChat(requestSizeChatDto);
     }
 
 
