@@ -2,11 +2,13 @@ package com.example.webapplicationserver.controller;
 
 import com.example.webapplicationserver.apiPayload.ApiResponseWrapper;
 import com.example.webapplicationserver.apiPayload.code.status.SuccessStatus;
+import com.example.webapplicationserver.dto.request.widget.RequestSizeChatDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
 import com.example.webapplicationserver.service.FittingModelService;
 import com.example.webapplicationserver.service.FittingService;
+import com.example.webapplicationserver.service.OpenAIStreamService;
 import com.example.webapplicationserver.service.WidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,8 +17,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/widget")
@@ -26,6 +30,7 @@ public class WidgetController {
     private final WidgetService widgetService;
     private final FittingModelService fittingModelService;
     private final FittingService fittingService;
+    private final OpenAIStreamService openAIStreamService;
 
     @Operation(summary = "Get widget information for specific device", description = "Get widget information by device id")
     @ApiResponses(value = {
@@ -66,6 +71,13 @@ public class WidgetController {
     ) {
         ResponseFittingResultDto  responseFittingResultDto = fittingService.tryOnCloth(deviceId, modelId, itemImage);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FITTING_RESULT_CREATED, responseFittingResultDto);
+    }
+
+    @PostMapping(value = "size", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> getSizeStreamChat(
+            @RequestBody RequestSizeChatDto requestSizeChatDto
+            ) {
+        return openAIStreamService.streamChat(requestSizeChatDto);
     }
 
 
