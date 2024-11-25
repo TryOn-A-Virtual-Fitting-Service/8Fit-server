@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -64,9 +65,9 @@ public class OpenAIStreamService {
                 .retrieve()
                 .bodyToFlux(String.class) // 청크 데이터를 문자열로 수신
                 .flatMap(chunk -> {
+
                     if (chunk.equals("[DONE]")) {
-                        // [DONE] 메시지를 무시하고 스트림에서 제거
-                        return Mono.empty();
+                        return Mono.just("[DONE]");
                     }
 
                     try {
@@ -77,18 +78,16 @@ public class OpenAIStreamService {
                     }
                 })
                 .filter(content -> content != null && !content.isEmpty()) // 유효한 데이터만 필터링
+                .concatWith(Flux.just(" ")) // Keep-Alive를 위한 빈 데이터 추가
                 .onErrorResume(error -> {
 //                    log.error("Streaming error occurred", error);
-                    return Mono.empty(); // 에러 발생 시 빈 스트림 반환
+                    return Flux.empty(); // 에러 발생 시 빈 스트림 반환
                 });
 //                .doOnNext(content -> log.info("Parsed content: " + content)); // 디버깅용
     }
 
     private String parseChunk(String chunk) {
         try {
-            if (chunk.equals("[DONE]")) {
-                return "";
-            }
             ObjectMapper objectMapper = new ObjectMapper();
             ChatStreamResponse response = objectMapper.readValue(chunk, ChatStreamResponse.class);
 
