@@ -64,6 +64,11 @@ public class OpenAIStreamService {
                 .retrieve()
                 .bodyToFlux(String.class) // 청크 데이터를 문자열로 수신
                 .flatMap(chunk -> {
+                    if (chunk.equals("[DONE]")) {
+                        // [DONE] 메시지를 무시하고 스트림에서 제거
+                        return Mono.empty();
+                    }
+
                     try {
                         return Mono.justOrEmpty(parseChunk(chunk)); // 파싱 성공 시 데이터 반환
                     } catch (Exception e) {
@@ -72,6 +77,10 @@ public class OpenAIStreamService {
                     }
                 })
                 .filter(content -> content != null && !content.isEmpty()) // 유효한 데이터만 필터링
+                .onErrorResume(error -> {
+                    log.error("Streaming error occurred", error);
+                    return Mono.empty(); // 에러 발생 시 빈 스트림 반환
+                })
                 .doOnNext(content -> log.info("Parsed content: " + content)); // 디버깅용
     }
 
