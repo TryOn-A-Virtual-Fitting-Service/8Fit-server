@@ -73,3 +73,8 @@ server-uri:
   fitting: ${FITTING_SERVER_URI_PROD}
   image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_PROD}
   domain: ${DOMAIN}
+
+# OpenAI
+openai:
+  api-key: ${OPENAI_API_KEY}
+  url: ${OPENAI_URL}
