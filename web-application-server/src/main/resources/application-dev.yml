@@ -33,7 +33,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -72,4 +72,10 @@ server-uri:
   fitting: ${FITTING_SERVER_URI_DEV}
   image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_DEV}
   domain: ${DOMAIN}
+
+
+# OpenAI
+openai:
+  api-key: ${OPENAI_API_KEY}
+  url: ${OPENAI_URL}
 
