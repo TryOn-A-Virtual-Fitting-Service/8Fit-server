@@ -72,16 +72,16 @@ public class OpenAIStreamService {
                     try {
                         return Mono.justOrEmpty(parseChunk(chunk)); // 파싱 성공 시 데이터 반환
                     } catch (Exception e) {
-                        log.error("Error parsing chunk: " + chunk); // 디버깅용 로그
+//                        log.error("Error parsing chunk: " + chunk); // 디버깅용 로그
                         return Mono.empty(); // 에러 발생 시 해당 청크 무시
                     }
                 })
                 .filter(content -> content != null && !content.isEmpty()) // 유효한 데이터만 필터링
                 .onErrorResume(error -> {
-                    log.error("Streaming error occurred", error);
+//                    log.error("Streaming error occurred", error);
                     return Mono.empty(); // 에러 발생 시 빈 스트림 반환
-                })
-                .doOnNext(content -> log.info("Parsed content: " + content)); // 디버깅용
+                });
+//                .doOnNext(content -> log.info("Parsed content: " + content)); // 디버깅용
     }
 
     private String parseChunk(String chunk) {
