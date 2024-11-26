@@ -13,6 +13,6 @@ public class FittingModelConverter {
     }
 
     public static ResponseFittingModelDto toResponseFittingModelDto(FittingModel fittingModel) {
-        return new ResponseFittingModelDto(fittingModel.getImageUrl());
+        return new ResponseFittingModelDto(fittingModel.getId(), fittingModel.getImageUrl());
     }
 }
