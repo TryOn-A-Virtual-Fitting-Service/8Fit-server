@@ -32,33 +32,41 @@ public class FittingModelService {
 
     @Transactional
     public ResponseFittingModelDto uploadFittingModel(String deviceId, MultipartFile image) {
-        if (image.isEmpty()) {
-            throw new S3ExceptionHandler(ErrorStatus.FILE_EMPTY);
-        }
+        validateImage(image);
 
-        // get user
-        User user = userRepository.findByDeviceId(deviceId)
-                .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
+        User user = findUserByDeviceId(deviceId);
 
-        // remove background from image
-        byte[] imageBytes;
-        try {
-             imageBytes = image.getBytes();
-        } catch (Exception e) {
-            throw new FittingExceptionHandler(ErrorStatus.BYTES_CONVERSION_ERROR);
-        }
-        byte[] backgroundRemovedImage = imageProcessUtils.removeBackground(imageBytes);
+        byte[] backgroundRemovedImage = processImage(image);
 
-        // upload fitting model image
         String modelUrl = s3Utils.uploadImage(backgroundRemovedImage);
 
-        // save fitting model
-        FittingModel fittingModel = FittingModelConverter.toEntity(modelUrl, user);
-        fittingModelRepository.save(fittingModel);
+        FittingModel fittingModel = saveFittingModel(modelUrl, user);
 
         return FittingModelConverter.toResponseFittingModelDto(fittingModel);
     }
 
+    private void validateImage(MultipartFile image) {
+        if (image.isEmpty()) {
+            throw new S3ExceptionHandler(ErrorStatus.FILE_EMPTY);
+        }
+    }
 
+    private User findUserByDeviceId(String deviceId) {
+        return userRepository.findByDeviceId(deviceId)
+                .orElseThrow(() -> new UserExceptionHandler(ErrorStatus.USER_NOT_FOUND));
+    }
 
+    private byte[] processImage(MultipartFile image) {
+        try {
+            byte[] imageBytes = image.getBytes();
+            return imageProcessUtils.removeBackground(imageBytes);
+        } catch (Exception e) {
+            throw new FittingExceptionHandler(ErrorStatus.BYTES_CONVERSION_ERROR);
+        }
+    }
+
+    private FittingModel saveFittingModel(String modelUrl, User user) {
+        FittingModel fittingModel = FittingModelConverter.toEntity(modelUrl, user);
+        return fittingModelRepository.save(fittingModel);
+    }
 }
