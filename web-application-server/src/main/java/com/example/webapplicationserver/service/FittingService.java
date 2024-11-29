@@ -20,7 +20,6 @@ import com.example.webapplicationserver.repository.FittingRepository;
 import com.example.webapplicationserver.repository.UserRepository;
 import com.example.webapplicationserver.utils.ImageProcessUtils;
 import com.example.webapplicationserver.utils.S3Utils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +79,9 @@ public class FittingService {
 
         // 4. 피팅 요청
         byte[] resultImage = postToFittingServerAndGetResult(clothImageUrl, fittingModelImageUrl);
+
+        // 5. 결과 업로드
+        resultImage = imageProcessUtils.removeBackground(resultImage);
         String resultImageUrl = s3Utils.uploadImage(resultImage);
 
 
