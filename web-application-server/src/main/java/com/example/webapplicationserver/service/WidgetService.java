@@ -1,5 +1,7 @@
 package com.example.webapplicationserver.service;
 
+import com.example.webapplicationserver.apiPayload.code.status.ErrorStatus;
+import com.example.webapplicationserver.apiPayload.exception.handler.UserExceptionHandler;
 import com.example.webapplicationserver.converter.FittingModelConverter;
 import com.example.webapplicationserver.converter.UserConverter;
 import com.example.webapplicationserver.dto.request.widget.RequestWidgetInfoDto;
@@ -20,36 +22,60 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class WidgetService {
+
     private final UserRepository userRepository;
     private final FittingModelRepository fittingModelRepository;
-    private final String MALE = "male";
-    private final String FEMALE = "female";
+    private static final String MALE = "male";
+    private static final String FEMALE = "female";
 
     @Transactional
     public ResponseWidgetDto getWidgetInfo(RequestWidgetInfoDto requestWidgetInfoDto) {
-        Optional<User> user = userRepository.findByDeviceId(requestWidgetInfoDto.deviceId());
+        // Validate gender input
+        validateGender(requestWidgetInfoDto.gender());
 
-        if (user.isEmpty()) {
-            // save user
-            User newUser = userRepository.save(UserConverter.toEntity(requestWidgetInfoDto.deviceId()));
+        // Find or create user
+        User user = userRepository
+                .findByDeviceId(requestWidgetInfoDto.deviceId())
+                .orElseGet(() -> createUserWithDefaultModels(requestWidgetInfoDto));
 
-            FittingModel firstModel, secondModel;
+        // Convert user to response DTO
+        return UserConverter.toResponseWidgetDto(user);
+    }
 
-            if (requestWidgetInfoDto.gender().equalsIgnoreCase(MALE)) {
-                firstModel = FittingModelConverter.toEntity(DefaultModelUrl.MALE_MODEL.getUrl(), newUser);
-                secondModel = FittingModelConverter.toEntity(DefaultModelUrl.FEMALE_MODEL.getUrl(), newUser);
-            } else {
-                firstModel = FittingModelConverter.toEntity(DefaultModelUrl.FEMALE_MODEL.getUrl(), newUser);
-                secondModel = FittingModelConverter.toEntity(DefaultModelUrl.MALE_MODEL.getUrl(), newUser);
-            }
-            newUser.addFittingModels(List.of(firstModel, secondModel));
+    private void validateGender(String gender) {
+        if (!MALE.equalsIgnoreCase(gender) && !FEMALE.equalsIgnoreCase(gender)) {
+            throw new IllegalArgumentException(ErrorStatus.GENDER_SETTING_NOT_FOUND.getMessage());
+        }
+    }
 
-            fittingModelRepository.save(firstModel);
-            fittingModelRepository.save(secondModel);
+    private User createUserWithDefaultModels(RequestWidgetInfoDto requestWidgetInfoDto) {
+        // Create new user
+        User newUser = userRepository.save(UserConverter.toEntity(requestWidgetInfoDto.deviceId()));
 
-            return UserConverter.toResponseWidgetDto(newUser);
+        // Initialize fitting models based on gender
+        List<FittingModel> fittingModels = createDefaultFittingModels(requestWidgetInfoDto.gender(), newUser);
+
+        // Save fitting models
+        fittingModelRepository.saveAll(fittingModels);
+
+        // Associate fitting models with the user
+        newUser.addFittingModels(fittingModels.reversed());
+
+        return newUser;
+    }
+
+    private List<FittingModel> createDefaultFittingModels(String gender, User user) {
+        FittingModel primaryModel;
+        FittingModel secondaryModel;
+
+        if (MALE.equalsIgnoreCase(gender)) {
+            primaryModel = FittingModelConverter.toEntity(DefaultModelUrl.MALE_MODEL.getUrl(), user);
+            secondaryModel = FittingModelConverter.toEntity(DefaultModelUrl.FEMALE_MODEL.getUrl(), user);
+        } else {
+            primaryModel = FittingModelConverter.toEntity(DefaultModelUrl.FEMALE_MODEL.getUrl(), user);
+            secondaryModel = FittingModelConverter.toEntity(DefaultModelUrl.MALE_MODEL.getUrl(), user);
         }
 
-        return UserConverter.toResponseWidgetDto(user.get());
+        return List.of(primaryModel, secondaryModel);
     }
 }
