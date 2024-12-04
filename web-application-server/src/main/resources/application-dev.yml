@@ -69,7 +69,7 @@ springdoc:
 
 
 server-uri:
-  fitting: ${FITTING_SERVER_URI_DEV}
+  fitting: ${FITTING_SERVER_URI_PROD}
   image-classification-worker: ${IMAGE_CLASSIFICATION_SERVER_URI_DEV}
   domain: ${DOMAIN}
 

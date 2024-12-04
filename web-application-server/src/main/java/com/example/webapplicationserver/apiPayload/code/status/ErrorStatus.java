@@ -15,6 +15,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // USER(DEVICE)
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "DEVICE404", "사용자를 찾을 수 없습니다. deviceId를 확인하세요"),
+    GENDER_SETTING_NOT_FOUND(HttpStatus.NOT_FOUND, "GENDER404", "성별 초기 세팅을 찾을 수 없습니다. gender를 확인하세요"),
 
     // S3
     FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FILE500", "파일 업로드 중 에러가 발생했습니다."),
