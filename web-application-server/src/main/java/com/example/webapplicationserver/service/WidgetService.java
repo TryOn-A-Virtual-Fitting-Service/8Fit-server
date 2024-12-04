@@ -44,7 +44,7 @@ public class WidgetService {
 
     private void validateGender(String gender) {
         if (!MALE.equalsIgnoreCase(gender) && !FEMALE.equalsIgnoreCase(gender)) {
-            throw new IllegalArgumentException(ErrorStatus.GENDER_SETTING_NOT_FOUND.getMessage());
+            throw new UserExceptionHandler(ErrorStatus.GENDER_SETTING_NOT_FOUND);
         }
     }
 
@@ -76,6 +76,6 @@ public class WidgetService {
             secondaryModel = FittingModelConverter.toEntity(DefaultModelUrl.MALE_MODEL.getUrl(), user);
         }
 
-        return List.of(primaryModel, secondaryModel);
+        return List.of(secondaryModel, primaryModel); // make primary model to display first (save in second time)
     }
 }
