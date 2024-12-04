@@ -3,6 +3,7 @@ package com.example.webapplicationserver.controller;
 import com.example.webapplicationserver.apiPayload.ApiResponseWrapper;
 import com.example.webapplicationserver.apiPayload.code.status.SuccessStatus;
 import com.example.webapplicationserver.dto.request.widget.RequestSizeChatDto;
+import com.example.webapplicationserver.dto.request.widget.RequestWidgetInfoDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
@@ -35,12 +36,14 @@ public class WidgetController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Widget information is successfully retrieved"),
     })
-    @GetMapping({"{deviceId}"})
+    @GetMapping({"{deviceId}/{gender}"})
     public ApiResponseWrapper<ResponseWidgetDto> getWidget(
             @Parameter(description = "Device ID", required = true)
-            @PathVariable("deviceId") @NotEmpty String deviceId
+            @PathVariable("deviceId") @NotEmpty String deviceId,
+            @PathVariable("gender") @NotEmpty String gender
     ) {
-        ResponseWidgetDto responseWidgetDto = widgetService.getWidgetInfo(deviceId);
+        RequestWidgetInfoDto requestWidgetInfoDto = new RequestWidgetInfoDto(deviceId, gender);
+        ResponseWidgetDto responseWidgetDto = widgetService.getWidgetInfo(requestWidgetInfoDto);
         return ApiResponseWrapper.onSuccess(SuccessStatus.WIDGET_INFO_OK, responseWidgetDto);
     }
 
