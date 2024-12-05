@@ -64,7 +64,7 @@ public class FittingService {
 
     @Transactional
     public ResponseFittingResultDto tryOnCloth(String deviceId, Long modelId, MultipartFile clothImage) {
-        // 1. 유저 조회
+        // 1. 유저 및 모델 조회
         User user = getUser(deviceId);
 
         // 2. 카테고리 예측 및 지원 여부 확인
@@ -73,8 +73,7 @@ public class FittingService {
 
         // 3. 모델 이미지 및 옷 이미지 링크 준비
         String clothImageUrl = s3Utils.uploadImage(clothImage);
-        FittingModel fittingModel = fittingModelRepository.findById(modelId)
-                .orElseThrow(() -> new FittingExceptionHandler(ErrorStatus.MODEL_NOT_FOUND));
+        FittingModel fittingModel = getFittingModel(modelId);
         String fittingModelImageUrl = fittingModel.getImageUrl();
 
         // 4. 피팅 요청
@@ -88,7 +87,7 @@ public class FittingService {
         // 5. 데이터 저장
         Cloth cloth = saveCloth(clothImageUrl, clothCategory);
         Fitting fitting = saveFitting(resultImageUrl, fittingModel, cloth);
-        updateFittingModelImage(fittingModel, resultImageUrl);
+        fittingModel.setImageUrl(resultImageUrl);
 
         // 6. 결과 반환
         return FittingConverter.toResponseFittingResultDto(fitting);
@@ -124,10 +123,6 @@ public class FittingService {
     private Fitting saveFitting(String resultImageUrl, FittingModel fittingModel, Cloth cloth) {
         Fitting fitting = FittingConverter.toEntity(resultImageUrl, fittingModel, cloth);
         return fittingRepository.save(fitting);
-    }
-
-    private void updateFittingModelImage(FittingModel fittingModel, String resultImageUrl) {
-        fittingModel.setImageUrl(resultImageUrl);
     }
 
 
