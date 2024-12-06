@@ -77,7 +77,7 @@ public class FittingService {
         String fittingModelImageUrl = fittingModel.getImageUrl();
 
         // 4. 피팅 요청
-        byte[] resultImage = postToFittingServerAndGetResult(clothImageUrl, fittingModelImageUrl);
+        byte[] resultImage = postToFittingServerAndGetResult(clothImageUrl, fittingModelImageUrl, clothCategory);
 
         // 5. 결과 업로드
         resultImage = imageProcessUtils.removeBackground(resultImage);
@@ -126,22 +126,23 @@ public class FittingService {
     }
 
 
-    public byte[] postToFittingServerAndGetResult(String clothImageUrl, String fittingModelImageUrl) {
-        String fileName = uploadImagesAndGetUrlFromFittingServer(clothImageUrl, fittingModelImageUrl);
+    public byte[] postToFittingServerAndGetResult(String clothImageUrl, String fittingModelImageUrl, Category category) {
+        String fileName = uploadImagesAndGetUrlFromFittingServer(clothImageUrl, fittingModelImageUrl, category);
         String imageUrl = fittingServerUri + "/static/" + fileName;
         return downloadImageFromUrl(imageUrl);
     }
 
-    public String uploadImagesAndGetUrlFromFittingServer(String clothImageUrl, String fittingModelImageUrl) {
+    public String uploadImagesAndGetUrlFromFittingServer(String clothImageUrl, String fittingModelImageUrl, Category category) {
         try {
             String targetUri = UriComponentsBuilder.fromHttpUrl(fittingServerUri)
                     .path("/inference/")
                     .toUriString();
 
             // JSON payload 생성
-            Map<String, String> requestPayload = new HashMap<>();
+            Map<String, Object> requestPayload = new HashMap<>();
             requestPayload.put("clothing", clothImageUrl);
             requestPayload.put("model", fittingModelImageUrl);
+            requestPayload.put("category", category.getSuperType().ordinal());
 
 
             InferenceResponseDto response = webClient.post()
@@ -167,6 +168,7 @@ public class FittingService {
             if (response == null) {
                 throw new FittingExceptionHandler(ErrorStatus.FITTING_POST_ERROR);
             }
+            log.info(response.message());
 
             return response.data();
 
