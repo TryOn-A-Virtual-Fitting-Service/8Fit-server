@@ -8,6 +8,7 @@ import com.example.webapplicationserver.dto.response.widget.ResponseFittingModel
 import com.example.webapplicationserver.entity.Fitting;
 import com.example.webapplicationserver.entity.FittingModel;
 import com.example.webapplicationserver.entity.User;
+import com.example.webapplicationserver.enums.DefaultModelUrl;
 import com.example.webapplicationserver.repository.FittingModelRepository;
 import com.example.webapplicationserver.repository.UserRepository;
 import com.example.webapplicationserver.utils.ImageProcessUtils;
@@ -30,6 +31,10 @@ public class FittingModelService {
     private final S3Utils s3Utils;
     private final ImageProcessUtils imageProcessUtils;
 
+    private static final String MALE = "male";
+    private static final String FEMALE = "female";
+
+
 
     @Transactional
     public ResponseFittingModelDto uploadFittingModel(String deviceId, MultipartFile image) {
@@ -47,14 +52,17 @@ public class FittingModelService {
     }
 
     @Transactional
-    public ResponseFittingModelDto uploadDefaultFittingModel(String deviceId, MultipartFile image) {
+    public ResponseFittingModelDto uploadDefaultFittingModel(String deviceId, String gender, MultipartFile image) {
         validateImage(image);
 
         User user = findUserByDeviceId(deviceId);
 
-        String modelUrl = s3Utils.uploadImage(image);
-
-        FittingModel fittingModel = saveFittingModel(modelUrl, user);
+        FittingModel fittingModel;
+        if (MALE.equalsIgnoreCase(gender)) {
+            fittingModel = saveFittingModel(DefaultModelUrl.MALE_MODEL.getUrl(), user);
+        } else {
+            fittingModel = saveFittingModel(DefaultModelUrl.FEMALE_MODEL.getUrl(), user);
+        }
 
         return FittingModelConverter.toResponseFittingModelDto(fittingModel);
     }
