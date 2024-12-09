@@ -5,6 +5,7 @@ import com.example.webapplicationserver.apiPayload.exception.handler.S3Exception
 import com.example.webapplicationserver.apiPayload.exception.handler.UserExceptionHandler;
 import com.example.webapplicationserver.converter.FittingModelConverter;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
+import com.example.webapplicationserver.entity.Fitting;
 import com.example.webapplicationserver.entity.FittingModel;
 import com.example.webapplicationserver.entity.User;
 import com.example.webapplicationserver.repository.FittingModelRepository;
@@ -39,6 +40,19 @@ public class FittingModelService {
         byte[] backgroundRemovedImage = processImage(image);
 
         String modelUrl = s3Utils.uploadImage(backgroundRemovedImage);
+
+        FittingModel fittingModel = saveFittingModel(modelUrl, user);
+
+        return FittingModelConverter.toResponseFittingModelDto(fittingModel);
+    }
+
+    @Transactional
+    public ResponseFittingModelDto uploadDefaultFittingModel(String deviceId, MultipartFile image) {
+        validateImage(image);
+
+        User user = findUserByDeviceId(deviceId);
+
+        String modelUrl = s3Utils.uploadImage(image);
 
         FittingModel fittingModel = saveFittingModel(modelUrl, user);
 
