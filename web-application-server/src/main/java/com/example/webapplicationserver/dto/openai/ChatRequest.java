@@ -8,6 +8,6 @@ import java.util.List;
 public class ChatRequest {
     private String model = "gpt-4o";
     private List<ChatMessage> messages;
-    private boolean stream = true;
+    private boolean stream = false;
     private double temperature = 1;
 }
