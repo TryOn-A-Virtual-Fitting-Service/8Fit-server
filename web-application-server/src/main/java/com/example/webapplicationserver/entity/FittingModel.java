@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +31,8 @@ public class FittingModel extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "fittingModel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @OrderBy("id DESC")
-    private final Set<Fitting> fittings = new LinkedHashSet<>();
+//    @OrderBy("id DESC")
+    private final List<Fitting> fittings = new ArrayList<>();
 
 
     @Builder(builderMethodName = "createFittingModel")

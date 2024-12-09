@@ -4,6 +4,7 @@ import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
 import com.example.webapplicationserver.entity.FittingModel;
 import com.example.webapplicationserver.entity.User;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class UserConverter {
@@ -34,6 +35,7 @@ public class UserConverter {
                         fitting.getImageUrl(),
                         fitting.getCloth().getImageUrl()
                 ))
+                .sorted(Comparator.comparing(ResponseWidgetDto.Model.Fitting::fittingId).reversed()) // id 기준으로 오름차순 정렬
                 .toList();
     }
 }

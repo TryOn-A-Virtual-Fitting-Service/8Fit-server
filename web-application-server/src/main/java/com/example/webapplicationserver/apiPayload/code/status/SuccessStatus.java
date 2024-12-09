@@ -17,6 +17,9 @@ public enum SuccessStatus implements BaseCode {
     WIDGET_INFO_OK(HttpStatus.OK, "WIDGET200", "위젯 정보를 성공적으로 불러왔습니다."),
     FILE_UPLOAD_OK(HttpStatus.OK, "FILE201", "파일 업로드가 성공적으로 완료되었습니다."),
     FITTING_RESULT_CREATED(HttpStatus.CREATED, "FITTING202", "가상 피팅 결과가 성공적으로 생성되었습니다."),
+
+    // On Size Chat
+    SIZE_CHAT_CREATED(HttpStatus.CREATED, "SIZE_CHAT202", "사이즈 추천 정보가 성공적으로 생성되었습니다.")
     ;
 
 

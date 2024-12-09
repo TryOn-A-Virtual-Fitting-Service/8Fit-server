@@ -2,13 +2,12 @@ package com.example.webapplicationserver.controller;
 
 import com.example.webapplicationserver.apiPayload.ApiResponseWrapper;
 import com.example.webapplicationserver.apiPayload.code.status.SuccessStatus;
-import com.example.webapplicationserver.dto.request.widget.RequestSizeChatDto;
+import com.example.webapplicationserver.dto.request.widget.RequestWidgetInfoDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingModelDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseFittingResultDto;
 import com.example.webapplicationserver.dto.response.widget.ResponseWidgetDto;
 import com.example.webapplicationserver.service.FittingModelService;
 import com.example.webapplicationserver.service.FittingService;
-import com.example.webapplicationserver.service.OpenAIStreamService;
 import com.example.webapplicationserver.service.WidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,10 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/widget")
@@ -35,12 +32,14 @@ public class WidgetController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Widget information is successfully retrieved"),
     })
-    @GetMapping({"{deviceId}"})
+    @GetMapping({"{deviceId}/{gender}"})
     public ApiResponseWrapper<ResponseWidgetDto> getWidget(
             @Parameter(description = "Device ID", required = true)
-            @PathVariable("deviceId") @NotEmpty String deviceId
+            @PathVariable("deviceId") @NotEmpty String deviceId,
+            @PathVariable("gender") @NotEmpty String gender
     ) {
-        ResponseWidgetDto responseWidgetDto = widgetService.getWidgetInfo(deviceId);
+        RequestWidgetInfoDto requestWidgetInfoDto = new RequestWidgetInfoDto(deviceId, gender);
+        ResponseWidgetDto responseWidgetDto = widgetService.getWidgetInfo(requestWidgetInfoDto);
         return ApiResponseWrapper.onSuccess(SuccessStatus.WIDGET_INFO_OK, responseWidgetDto);
     }
 
@@ -59,6 +58,15 @@ public class WidgetController {
             @RequestPart("image") MultipartFile image
     ) {
         ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadFittingModel(deviceId, image);
+        return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
+    }
+
+    @PostMapping("{deviceId}/default-model")
+    public ApiResponseWrapper<ResponseFittingModelDto> uploadDefaultFittingModel(
+            @PathVariable("deviceId") @NotEmpty String deviceId,
+            @RequestPart("image") MultipartFile image
+    ) {
+        ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadDefaultFittingModel(deviceId, image);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
     }
 

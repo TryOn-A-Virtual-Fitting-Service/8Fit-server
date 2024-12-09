@@ -40,6 +40,10 @@ public class User extends BaseEntity {
         fittingModel.setUser(null);
     }
 
+    public void addFittingModels(List<FittingModel> fittingModelList) {
+        fittingModels.addAll(fittingModelList);
+    }
+
 }
 
 
