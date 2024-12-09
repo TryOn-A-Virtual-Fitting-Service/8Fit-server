@@ -64,10 +64,9 @@ public class WidgetController {
     @PostMapping("{deviceId}/default-model/{gender}")
     public ApiResponseWrapper<ResponseFittingModelDto> uploadDefaultFittingModel(
             @PathVariable("deviceId") @NotEmpty String deviceId,
-            @PathVariable("gender") @NotEmpty String gender,
-            @RequestPart("image") MultipartFile image
+            @PathVariable("gender") @NotEmpty String gender
     ) {
-        ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadDefaultFittingModel(deviceId, gender, image);
+        ResponseFittingModelDto responseFittingModelDto = fittingModelService.uploadDefaultFittingModel(deviceId, gender);
         return ApiResponseWrapper.onSuccess(SuccessStatus.FILE_UPLOAD_OK, responseFittingModelDto);
     }
 

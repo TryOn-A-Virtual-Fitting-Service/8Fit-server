@@ -52,9 +52,7 @@ public class FittingModelService {
     }
 
     @Transactional
-    public ResponseFittingModelDto uploadDefaultFittingModel(String deviceId, String gender, MultipartFile image) {
-        validateImage(image);
-
+    public ResponseFittingModelDto uploadDefaultFittingModel(String deviceId, String gender) {
         User user = findUserByDeviceId(deviceId);
 
         FittingModel fittingModel;
